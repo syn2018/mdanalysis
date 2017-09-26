@@ -433,32 +433,49 @@ as described in documentation for ClusterCollection</p>
 <div class="section" id="clustering-algorithms">
 <h2>4.2.6.1.2.4. Clustering algorithms<a class="headerlink" href="#clustering-algorithms" title="Permalink to this headline">¶</a></h2>
 <p>The following clustering algorithms are always available:</p>
-<dl class="class">
+<span class="target" id="module-MDAnalysis.analysis.encore.clustering.affinityprop"></span><p>Cython wrapper for the C implementation of the Affinity Perturbation clustering algorithm.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Author:</th><td class="field-body">Matteo Tiberti, Wouter Boomsma, Tone Bengtsen</td>
+</tr>
+</tbody>
+</table>
+<dl class="function">
 <dt id="MDAnalysis.analysis.encore.clustering.affinityprop.AffinityPropagation">
-<em class="property">class </em><code class="descclassname">MDAnalysis.analysis.encore.clustering.affinityprop.</code><code class="descname">AffinityPropagation</code><a class="headerlink" href="#MDAnalysis.analysis.encore.clustering.affinityprop.AffinityPropagation" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">MDAnalysis.analysis.encore.clustering.affinityprop.</code><code class="descname">AffinityPropagation</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.encore.clustering.affinityprop.AffinityPropagation" title="Permalink to this definition">¶</a></dt>
 <dd><p>Affinity propagation clustering algorithm. This class is a Cython wrapper around the Affinity propagation algorithm, which is implement as a C library (see ap.c). The implemented algorithm is described in the paper:</p>
 <p>Clustering by Passing Messages Between Data Points.
 Brendan J. Frey and Delbert Dueck, University of Toronto
 Science 315, 972–976, February 2007</p>
-<dl class="method">
-<dt id="MDAnalysis.analysis.encore.clustering.affinityprop.AffinityPropagation.run">
-<code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.encore.clustering.affinityprop.AffinityPropagation.run" title="Permalink to this definition">¶</a></dt>
-<dd><p>Run the clustering algorithm.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>s</strong> (<em>encore.utils.TriangularMatrix object</em>) – Triangular matrix containing the similarity values for each pair of clustering elements. Notice that the current implementation does not allow for asymmetric values (i.e. similarity(a,b) is assumed to be equal to similarity(b,a))</li>
-<li><strong>preference</strong> (<em>numpy.array of floats</em><em> or </em><a class="reference external" href="https://docs.python.org/2/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) – Preference values, which the determine the number of clusters. If a single value is given, all the preference values are set to that. Otherwise, the list is used to set the preference values (one value per element, so the list must be of the same size as the number of elements)</li>
-<li><strong>lam</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) – Floating point value that defines how much damping is applied to the solution at each iteration. Must be ]0,1]</li>
+<li><strong>s</strong> (<em>encore.utils.TriangularMatrix object</em>) – Triangular matrix containing the similarity values for each pair of
+clustering elements. Notice that the current implementation does not
+allow for asymmetric values (i.e. similarity(a,b) is assumed to be
+equal to similarity(b,a))</li>
+<li><strong>preference</strong> (<em>numpy.array of floats</em><em> or </em><a class="reference external" href="https://docs.python.org/2/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) – Preference values, which the determine the number of clusters. If a
+single value is given, all the preference values are set to that.
+Otherwise, the list is used to set the preference values (one value per
+element, so the list must be of the same size as the number of
+elements)</li>
+<li><strong>lam</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) – Floating point value that defines how much damping is applied to the
+solution at each iteration. Must be ]0,1]</li>
 <li><strong>max_iterations</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – Maximum number of iterations</li>
-<li><strong>convergence</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – Number of iterations in which the cluster centers must remain the same in order to reach convergence</li>
-<li><strong>noise</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – Whether to apply noise to the input s matrix, such there are no equal values. 1 is for yes, 0 is for no.</li>
+<li><strong>convergence</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – Number of iterations in which the cluster centers must remain the same
+in order to reach convergence</li>
+<li><strong>noise</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – Whether to apply noise to the input s matrix, such there are no equal
+values. 1 is for yes, 0 is for no.</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>elements</strong> – List of cluster-assigned elements, which can be used by encore.utils.ClustersCollection to generate Cluster objects. See these classes for more details.</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>elements</strong> – List of cluster-assigned elements, which can be used by
+encore.utils.ClustersCollection to generate Cluster objects. See these
+classes for more details.</p>
 </td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">list of int or <a class="reference external" href="https://docs.python.org/2/library/constants.html#None" title="(in Python v2.7)">None</a></p>
@@ -466,8 +483,6 @@ Science 315, 972–976, February 2007</p>
 </tr>
 </tbody>
 </table>
-</dd></dl>
-
 </dd></dl>
 
 </div>
@@ -574,7 +589,7 @@ Science 315, 972–976, February 2007</p>
       &copy;2005-2017, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, David Caplan, Matthieu Chavent, Kathleen Clark, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Andrew William King, Max Linke, Jinju Lu, Micaela Matta, Robert McGibbon, Manuel Nuno Melo, Dominik 'Rathann' Mierzejewski, Fiona Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Vedant Rathore, Tyler Reddy, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Xiki Tempula, Matteo Tiberti, Isaac Virshup, Nestor Wendt, Zhuyi Xue, Juan Eiros Zamora, and Oliver Beckstein.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.3</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.4</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
       
       |
