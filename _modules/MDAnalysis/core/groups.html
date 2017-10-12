@@ -1789,23 +1789,39 @@
 <span class="sd">        are not any duplicates, which can happen with complicated</span>
 <span class="sd">        selections).</span>
 
-<span class="sd">        Existing :class:`AtomGroup` objects can be passed as named arguments,</span>
-<span class="sd">        which will then be available to the selection parser.</span>
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        All simple selection listed below support multiple arguments which are</span>
+<span class="sd">        implicitly combined with an or operator. For example</span>
+
+<span class="sd">           &gt;&gt;&gt; sel = universe.select_atoms(&#39;resname MET GLY&#39;)</span>
+<span class="sd">           </span>
+<span class="sd">        is equivalent to </span>
+
+<span class="sd">           &gt;&gt;&gt; sel = universe.select_atoms(&#39;resname MET or resname GLY&#39;)</span>
+
+<span class="sd">        Will select all atoms with a residue name of either MET or GLY.</span>
 
 <span class="sd">        Subselections can be grouped with parentheses.</span>
 
-<span class="sd">        Selections can be set to update automatically on frame change, by</span>
-<span class="sd">        setting the `updating` named argument to `True`.</span>
-
-<span class="sd">        Examples</span>
-<span class="sd">        --------</span>
-
-<span class="sd">           &gt;&gt;&gt; sel = universe.select_atoms(&quot;segid DMPC and not ( name H* or name O* )&quot;)</span>
+<span class="sd">           &gt;&gt;&gt; sel = universe.select_atoms(&quot;segid DMPC and not ( name H* O* )&quot;)</span>
 <span class="sd">           &gt;&gt;&gt; sel</span>
 <span class="sd">           &lt;AtomGroup with 3420 atoms&gt;</span>
 
+
+<span class="sd">        Existing :class:`AtomGroup` objects can be passed as named arguments,</span>
+<span class="sd">        which will then be available to the selection parser.</span>
+
 <span class="sd">           &gt;&gt;&gt; universe.select_atoms(&quot;around 10 group notHO&quot;, notHO=sel)</span>
 <span class="sd">           &lt;AtomGroup with 1250 atoms&gt;</span>
+
+<span class="sd">        Selections can be set to update automatically on frame change, by</span>
+<span class="sd">        setting the `updating` keyword argument to `True`.  This will return</span>
+<span class="sd">        a :class:`UpdatingAtomGroup` which can represent the solvation shell</span>
+<span class="sd">        around another object.</span>
+
+<span class="sd">           &gt;&gt;&gt; universe.select_atoms(&quot;resname SOL and around 2.0 protein&quot;, updating=True)</span>
+<span class="sd">           &lt;Updating AtomGroup with 100 atoms&gt;</span>
 
 <span class="sd">        Notes</span>
 <span class="sd">        -----</span>
@@ -1884,7 +1900,7 @@
 
 <span class="sd">            and, or</span>
 <span class="sd">                combine two selections according to the rules of boolean</span>
-<span class="sd">                algebra, e.g. ``protein and not (resname ALA or resname LYS)``</span>
+<span class="sd">                algebra, e.g. ``protein and not resname ALA LYS``</span>
 <span class="sd">                selects all atoms that belong to a protein, but are not in a</span>
 <span class="sd">                lysine or alanine residue</span>
 
@@ -1920,7 +1936,7 @@
 <span class="sd">                selection, e.g. specify the subselection after the byres keyword</span>
 <span class="sd">            bonded *selection*</span>
 <span class="sd">                selects all atoms that are bonded to selection</span>
-<span class="sd">                eg: ``select name H bonded name O`` selects only hydrogens</span>
+<span class="sd">                eg: ``select name H and bonded name O`` selects only hydrogens</span>
 <span class="sd">                bonded to oxygens</span>
 
 <span class="sd">        **Index**</span>

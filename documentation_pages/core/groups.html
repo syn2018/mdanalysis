@@ -961,19 +961,35 @@ represented in the AtomGroup.</p>
 their index in the topology (this is to ensure that there
 are not any duplicates, which can happen with complicated
 selections).</p>
-<p>Existing <a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></code></a> objects can be passed as named arguments,
-which will then be available to the selection parser.</p>
-<p>Subselections can be grouped with parentheses.</p>
-<p>Selections can be set to update automatically on frame change, by
-setting the <cite>updating</cite> named argument to <cite>True</cite>.</p>
 <p class="rubric">Examples</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sel</span> <span class="o">=</span> <span class="n">universe</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;segid DMPC and not ( name H* or name O* )&quot;</span><span class="p">)</span>
+<p>All simple selection listed below support multiple arguments which are
+implicitly combined with an or operator. For example</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sel</span> <span class="o">=</span> <span class="n">universe</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;resname MET GLY&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>is equivalent to</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sel</span> <span class="o">=</span> <span class="n">universe</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;resname MET or resname GLY&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Will select all atoms with a residue name of either MET or GLY.</p>
+<p>Subselections can be grouped with parentheses.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sel</span> <span class="o">=</span> <span class="n">universe</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;segid DMPC and not ( name H* O* )&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sel</span>
 <span class="go">&lt;AtomGroup with 3420 atoms&gt;</span>
 </pre></div>
 </div>
+<p>Existing <a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></code></a> objects can be passed as named arguments,
+which will then be available to the selection parser.</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">universe</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;around 10 group notHO&quot;</span><span class="p">,</span> <span class="n">notHO</span><span class="o">=</span><span class="n">sel</span><span class="p">)</span>
 <span class="go">&lt;AtomGroup with 1250 atoms&gt;</span>
+</pre></div>
+</div>
+<p>Selections can be set to update automatically on frame change, by
+setting the <cite>updating</cite> keyword argument to <cite>True</cite>.  This will return
+a <a class="reference internal" href="#MDAnalysis.core.groups.UpdatingAtomGroup" title="MDAnalysis.core.groups.UpdatingAtomGroup"><code class="xref py py-class docutils literal"><span class="pre">UpdatingAtomGroup</span></code></a> which can represent the solvation shell
+around another object.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">universe</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;resname SOL and around 2.0 protein&quot;</span><span class="p">,</span> <span class="n">updating</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="go">&lt;Updating AtomGroup with 100 atoms&gt;</span>
 </pre></div>
 </div>
 <p class="rubric">Notes</p>
@@ -1047,7 +1063,7 @@ moment, only the TPR format defines the molecule type.</dd>
 all atoms that aren’t part of a protein</dd>
 <dt>and, or</dt>
 <dd>combine two selections according to the rules of boolean
-algebra, e.g. <code class="docutils literal"><span class="pre">protein</span> <span class="pre">and</span> <span class="pre">not</span> <span class="pre">(resname</span> <span class="pre">ALA</span> <span class="pre">or</span> <span class="pre">resname</span> <span class="pre">LYS)</span></code>
+algebra, e.g. <code class="docutils literal"><span class="pre">protein</span> <span class="pre">and</span> <span class="pre">not</span> <span class="pre">resname</span> <span class="pre">ALA</span> <span class="pre">LYS</span></code>
 selects all atoms that belong to a protein, but are not in a
 lysine or alanine residue</dd>
 </dl>
@@ -1087,7 +1103,7 @@ geometry of <em>selection</em></dd>
 selection, e.g. specify the subselection after the byres keyword</dd>
 <dt>bonded <em>selection</em></dt>
 <dd>selects all atoms that are bonded to selection
-eg: <code class="docutils literal"><span class="pre">select</span> <span class="pre">name</span> <span class="pre">H</span> <span class="pre">bonded</span> <span class="pre">name</span> <span class="pre">O</span></code> selects only hydrogens
+eg: <code class="docutils literal"><span class="pre">select</span> <span class="pre">name</span> <span class="pre">H</span> <span class="pre">and</span> <span class="pre">bonded</span> <span class="pre">name</span> <span class="pre">O</span></code> selects only hydrogens
 bonded to oxygens</dd>
 </dl>
 </div></blockquote>
