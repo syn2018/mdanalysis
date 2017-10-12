@@ -106,12 +106,13 @@ coordinates.</p>
 <p class="rubric">Notes</p>
 <p>DCD is not a well defined format. One consequence of this is that different
 programs like CHARMM and NAMD are using different convention to store the
-unitcell information. The <a class="reference internal" href="#MDAnalysis.lib.formats.libdcd.DCDFile" title="MDAnalysis.lib.formats.libdcd.DCDFile"><code class="xref py py-class docutils literal"><span class="pre">DCDFile</span></code></a> will read the unitcell information
-as is when available. Post processing depending on the program this DCD file
-was written with is necessary. Have a look at the MDAnalysis DCD reader for
-possible post processing into a common unitcell data structure. You can also
-find more information how different programs store unitcell information in DCD
-on the <a class="reference external" href="https://github.com/MDAnalysis/mdanalysis/wiki/FileFormats#dcd">mdawiki</a> .</p>
+unitcell information. The <a class="reference internal" href="#MDAnalysis.lib.formats.libdcd.DCDFile" title="MDAnalysis.lib.formats.libdcd.DCDFile"><code class="xref py py-class docutils literal"><span class="pre">DCDFile</span></code></a> will read the unitcell
+information as is when available. Post processing depending on the program
+this DCD file was written with is necessary. Have a look at the MDAnalysis
+DCD reader for possible post processing into a common unitcell data
+structure. You can also find more information how different programs store
+unitcell information in DCD on the <a class="reference external" href="https://github.com/MDAnalysis/mdanalysis/wiki/FileFormats#dcd">mdawiki</a> . This class can be pickled.
+The pickle will store filename, mode, current frame</p>
 <dl class="attribute">
 <dt id="MDAnalysis.lib.formats.libdcd.DCDFile.charmm_bitfield">
 <code class="descname">charmm_bitfield</code><a class="headerlink" href="#MDAnalysis.lib.formats.libdcd.DCDFile.charmm_bitfield" title="Permalink to this definition">¶</a></dt>
