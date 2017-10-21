@@ -1352,7 +1352,7 @@
 <span class="sd">        also raised if ``atoms.masses`` is not defined.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">weights</span> <span class="o">==</span> <span class="s2">&quot;mass&quot;</span><span class="p">:</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">iterable</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span> <span class="ow">and</span> <span class="n">weights</span> <span class="o">==</span> <span class="s2">&quot;mass&quot;</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">weights</span> <span class="o">=</span> <span class="n">atoms</span><span class="o">.</span><span class="n">masses</span>
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>

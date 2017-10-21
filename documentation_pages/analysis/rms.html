@@ -246,11 +246,14 @@ be a <em>list of selection strings</em> to generate a
 <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></code></a> with defined atom order as
 described under <a class="reference internal" href="../selections.html#ordered-selections-label"><span class="std std-ref">Ordered selections</span></a>).</p>
 </li>
-<li><strong>groupselections</strong> (<em>list</em><em> (</em><em>optional</em><em>)</em>) – <p>A list of selections as described for <cite>select</cite>. Each selection
-describes additional RMSDs to be computed <em>after the
-structures have been superimposed</em> according to <cite>select</cite>. No
-additional fitting is performed.The output contains one
-additional column for each selection.</p>
+<li><strong>groupselections</strong> (<em>list</em><em> (</em><em>optional</em><em>)</em>) – <p>A list of selections as described for <cite>select</cite>, with the difference
+that these selections are <em>always applied to the full universes</em>,
+i.e., <code class="docutils literal"><span class="pre">atomgroup.universe.select_atoms(sel1)</span></code> and
+<code class="docutils literal"><span class="pre">reference.universe.select_atoms(sel2)</span></code>. Each selection describes
+additional RMSDs to be computed <em>after the structures have been
+superimposed</em> according to <cite>select</cite>. No additional fitting is
+performed.The output contains one additional column for each
+selection.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">Experimental feature. Only limited error checking
