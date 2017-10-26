@@ -216,7 +216,7 @@ the trajectory, then <code class="xref py py-attr docutils literal"><span class=
 <li>only trajectories with time in ps and lengths in Angstroem are processed</li>
 <li>scale_factors are not supported (and not checked)</li>
 </ul>
-<p>The NCDF reader uses <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/tutorial/io.html#module-scipy.io.netcdf" title="(in SciPy v0.19.1)"><code class="xref py py-mod docutils literal"><span class="pre">scipy.io.netcdf</span></code></a> and therefore <code class="xref py py-mod docutils literal"><span class="pre">scipy</span></code> must
+<p>The NCDF reader uses <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/tutorial/io.html#module-scipy.io.netcdf" title="(in SciPy v1.0.0)"><code class="xref py py-mod docutils literal"><span class="pre">scipy.io.netcdf</span></code></a> and therefore <code class="xref py py-mod docutils literal"><span class="pre">scipy</span></code> must
 be installed. It supports the <em>mmap</em> keyword argument (when reading):
 <code class="docutils literal"><span class="pre">mmap=True</span></code> is memory efficient and directly maps the trajectory on disk
 to memory; <code class="docutils literal"><span class="pre">mmap=False</span></code> may consume large amounts of memory because it
@@ -236,7 +236,7 @@ is <code class="docutils literal"><span class="pre">mmap=None</span></code> and 
 kwarg <cite>delta</cite> renamed to <cite>dt</cite>, for uniformity with other Readers.</p>
 </div>
 <div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.17.0: </span>Uses <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/tutorial/io.html#module-scipy.io.netcdf" title="(in SciPy v0.19.1)"><code class="xref py py-mod docutils literal"><span class="pre">scipy.io.netcdf</span></code></a> and supports the <em>mmap</em> kwarg.</p>
+<p><span class="versionmodified">Changed in version 0.17.0: </span>Uses <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/tutorial/io.html#module-scipy.io.netcdf" title="(in SciPy v1.0.0)"><code class="xref py py-mod docutils literal"><span class="pre">scipy.io.netcdf</span></code></a> and supports the <em>mmap</em> kwarg.</p>
 </div>
 <dl class="method">
 <dt id="MDAnalysis.coordinates.TRJ.NCDFReader.Writer">
@@ -271,7 +271,7 @@ kwarg <cite>delta</cite> renamed to <cite>dt</cite>, for uniformity with other R
 <dd><p>Close trajectory; any further access will raise an <code class="xref py py-exc docutils literal"><span class="pre">IOError</span></code>.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">The underlying <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/tutorial/io.html#module-scipy.io.netcdf" title="(in SciPy v0.19.1)"><code class="xref py py-mod docutils literal"><span class="pre">scipy.io.netcdf</span></code></a> module open netcdf
+<p class="last">The underlying <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/tutorial/io.html#module-scipy.io.netcdf" title="(in SciPy v1.0.0)"><code class="xref py py-mod docutils literal"><span class="pre">scipy.io.netcdf</span></code></a> module open netcdf
 files with <cite>mmap()</cite>. Hence <em>any</em> reference to an array
 <em>must</em> be removed before the file can be closed.</p>
 </div>
@@ -312,13 +312,13 @@ selects the value of <code class="xref py py-data docutils literal"><span class=
 </table>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p>MDAnalysis uses <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/tutorial/io.html#module-scipy.io.netcdf" title="(in SciPy v0.19.1)"><code class="xref py py-mod docutils literal"><span class="pre">scipy.io.netcdf</span></code></a> to access Amber files, which are in
-netcdf 3 format. Although <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/tutorial/io.html#module-scipy.io.netcdf" title="(in SciPy v0.19.1)"><code class="xref py py-mod docutils literal"><span class="pre">scipy.io.netcdf</span></code></a> is very fast at reading
+<p>MDAnalysis uses <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/tutorial/io.html#module-scipy.io.netcdf" title="(in SciPy v1.0.0)"><code class="xref py py-mod docutils literal"><span class="pre">scipy.io.netcdf</span></code></a> to access Amber files, which are in
+netcdf 3 format. Although <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/tutorial/io.html#module-scipy.io.netcdf" title="(in SciPy v1.0.0)"><code class="xref py py-mod docutils literal"><span class="pre">scipy.io.netcdf</span></code></a> is very fast at reading
 these files, it is <em>very</em> slow when writing, and it becomes slower the
 longer the files are. On the other hand, the <a class="reference external" href="https://unidata.github.io/netcdf4-python/">netCDF4</a> package (which
 requires the compiled netcdf library to be installed) is fast at writing
 but slow at reading. Therefore, we try to use <code class="xref py py-mod docutils literal"><span class="pre">netCDF4</span></code> for writing if
-available but otherwise fall back to the slower <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/tutorial/io.html#module-scipy.io.netcdf" title="(in SciPy v0.19.1)"><code class="xref py py-mod docutils literal"><span class="pre">scipy.io.netcdf</span></code></a>.</p>
+available but otherwise fall back to the slower <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/tutorial/io.html#module-scipy.io.netcdf" title="(in SciPy v1.0.0)"><code class="xref py py-mod docutils literal"><span class="pre">scipy.io.netcdf</span></code></a>.</p>
 <p><strong>Amber users</strong> might have a hard time getting netCDF4 to work with a
 conda-based installation (as discussed in <a class="reference external" href="https://github.com/MDAnalysis/mdanalysis/issues/506#issuecomment-225081416">Issue #506</a>) because of the way
 that Amber itself handles netcdf: When the Amber environment is loaded, the
@@ -356,7 +356,7 @@ environment before importing MDAnalysis.</p>
 </div>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.17.0: </span>Use fast <code class="xref py py-mod docutils literal"><span class="pre">netCDF4</span></code> for writing but fall back to slow
-<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/tutorial/io.html#module-scipy.io.netcdf" title="(in SciPy v0.19.1)"><code class="xref py py-mod docutils literal"><span class="pre">scipy.io.netcdf</span></code></a> if <code class="xref py py-mod docutils literal"><span class="pre">netCDF4</span></code> is not available.</p>
+<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/tutorial/io.html#module-scipy.io.netcdf" title="(in SciPy v1.0.0)"><code class="xref py py-mod docutils literal"><span class="pre">scipy.io.netcdf</span></code></a> if <code class="xref py py-mod docutils literal"><span class="pre">netCDF4</span></code> is not available.</p>
 </div>
 <dl class="method">
 <dt id="MDAnalysis.coordinates.TRJ.NCDFWriter.is_periodic">
@@ -506,7 +506,7 @@ timestep</td>
       &copy;2005-2017, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, David Caplan, Matthieu Chavent, Kathleen Clark, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Andrew William King, Max Linke, Jinju Lu, Micaela Matta, Robert McGibbon, Manuel Nuno Melo, Dominik 'Rathann' Mierzejewski, Fiona Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Vedant Rathore, Tyler Reddy, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Xiki Tempula, Matteo Tiberti, Isaac Virshup, Nestor Wendt, Zhuyi Xue, Juan Eiros Zamora, and Oliver Beckstein.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.4</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.5</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
       
       |
