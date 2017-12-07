@@ -77,6 +77,7 @@
 <span class="sd">These are usually read by the TopologyParser.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span><span class="p">,</span> <span class="n">absolute_import</span>
+<span class="kn">import</span> <span class="nn">six</span>
 <span class="kn">from</span> <span class="nn">six.moves</span> <span class="k">import</span> <span class="nb">zip</span><span class="p">,</span> <span class="nb">range</span>
 
 <span class="kn">import</span> <span class="nn">Bio.Seq</span>
@@ -100,6 +101,7 @@
 <span class="kn">from</span> <span class="nn">.groups</span> <span class="k">import</span> <span class="p">(</span><span class="n">ComponentBase</span><span class="p">,</span> <span class="n">GroupBase</span><span class="p">,</span>
                      <span class="n">Atom</span><span class="p">,</span> <span class="n">Residue</span><span class="p">,</span> <span class="n">Segment</span><span class="p">,</span>
                      <span class="n">AtomGroup</span><span class="p">,</span> <span class="n">ResidueGroup</span><span class="p">,</span> <span class="n">SegmentGroup</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="k">import</span> <span class="n">_TOPOLOGY_ATTRS</span>
 
 
 <span class="k">def</span> <span class="nf">_check_length</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
@@ -209,13 +211,29 @@
     <span class="p">))</span>
 
 
-<div class="viewcode-block" id="TopologyAttr"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.TopologyAttr">[docs]</a><span class="k">class</span> <span class="nc">TopologyAttr</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">_TopologyAttrMeta</span><span class="p">(</span><span class="nb">type</span><span class="p">):</span>
+    <span class="c1"># register TopologyAttrs</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">classdict</span><span class="p">):</span>
+        <span class="nb">type</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="nb">type</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">classdict</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;attrname&#39;</span><span class="p">,</span> <span class="s1">&#39;singular&#39;</span><span class="p">]:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">attrname</span> <span class="o">=</span> <span class="n">classdict</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="k">pass</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">_TOPOLOGY_ATTRS</span><span class="p">[</span><span class="n">attrname</span><span class="p">]</span> <span class="o">=</span> <span class="bp">cls</span>
+
+
+<div class="viewcode-block" id="TopologyAttr"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.TopologyAttr">[docs]</a><span class="k">class</span> <span class="nc">TopologyAttr</span><span class="p">(</span><span class="n">six</span><span class="o">.</span><span class="n">with_metaclass</span><span class="p">(</span><span class="n">_TopologyAttrMeta</span><span class="p">,</span> <span class="nb">object</span><span class="p">)):</span>
     <span class="sd">&quot;&quot;&quot;Base class for Topology attributes.</span>
 
-<span class="sd">    .. note::   This class is intended to be subclassed, and mostly amounts to</span>
-<span class="sd">                a skeleton. The methods here should be present in all</span>
-<span class="sd">                :class:`TopologyAttr` child classes, but by default they raise</span>
-<span class="sd">                appropriate exceptions.</span>
+<span class="sd">    Note</span>
+<span class="sd">    ----</span>
+<span class="sd">    This class is intended to be subclassed, and mostly amounts to</span>
+<span class="sd">    a skeleton. The methods here should be present in all</span>
+<span class="sd">    :class:`TopologyAttr` child classes, but by default they raise</span>
+<span class="sd">    appropriate exceptions.</span>
+
 
 <span class="sd">    Attributes</span>
 <span class="sd">    ----------</span>
@@ -233,6 +251,8 @@
     <span class="n">singular</span> <span class="o">=</span> <span class="s1">&#39;topologyattr&#39;</span>
     <span class="n">per_object</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># ie Resids per_object = &#39;residue&#39;</span>
     <span class="n">top</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># pointer to Topology object</span>
+    <span class="n">transplants</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+    <span class="n">target_classes</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="n">groupdoc</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">singledoc</span> <span class="o">=</span> <span class="kc">None</span>
@@ -240,6 +260,36 @@
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">guessed</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="n">values</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_guessed</span> <span class="o">=</span> <span class="n">guessed</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_gen_initial_values</span><span class="p">(</span><span class="n">n_atoms</span><span class="p">,</span> <span class="n">n_residues</span><span class="p">,</span> <span class="n">n_segments</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Populate an initial empty data structure for this Attribute</span>
+
+<span class="sd">        The only provided parameters are the &quot;shape&quot; of the Universe</span>
+
+<span class="sd">        Eg for charges, provide np.zeros(n_atoms)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;No default values&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="TopologyAttr.from_blank"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.TopologyAttr.from_blank">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_blank</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">n_atoms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">n_residues</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">n_segments</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                   <span class="n">values</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create a blank version of this TopologyAttribute</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        n_atoms : int, optional</span>
+<span class="sd">          Size of the TopologyAttribute atoms</span>
+<span class="sd">        n_residues: int, optional</span>
+<span class="sd">          Size of the TopologyAttribute residues</span>
+<span class="sd">        n_segments : int, optional</span>
+<span class="sd">          Size of the TopologyAttribute segments</span>
+<span class="sd">        values : optional</span>
+<span class="sd">          Initial values for the TopologyAttribute</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">values</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">values</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_gen_initial_values</span><span class="p">(</span><span class="n">n_atoms</span><span class="p">,</span> <span class="n">n_residues</span><span class="p">,</span> <span class="n">n_segments</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">values</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Length of the TopologyAttr at its intrinsic level.&quot;&quot;&quot;</span>
@@ -308,7 +358,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">attrname</span> <span class="o">=</span> <span class="s1">&#39;indices&#39;</span>
     <span class="n">singular</span> <span class="o">=</span> <span class="s1">&#39;index&#39;</span>
-    <span class="n">target_classes</span> <span class="o">=</span> <span class="p">[</span><span class="n">Atom</span><span class="p">]</span>
+    <span class="n">target_classes</span> <span class="o">=</span> <span class="p">[</span><span class="n">AtomGroup</span><span class="p">,</span> <span class="n">ResidueGroup</span><span class="p">,</span> <span class="n">SegmentGroup</span><span class="p">,</span> <span class="n">Atom</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_guessed</span> <span class="o">=</span> <span class="kc">False</span>
@@ -317,13 +367,13 @@
         <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">&quot;Atom indices are fixed; they cannot be reset&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">get_atoms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ag</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">ag</span><span class="o">.</span><span class="n">_ix</span>
+        <span class="k">return</span> <span class="n">ag</span><span class="o">.</span><span class="n">ix</span>
 
     <span class="k">def</span> <span class="nf">get_residues</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rg</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">top</span><span class="o">.</span><span class="n">tt</span><span class="o">.</span><span class="n">residues2atoms_2d</span><span class="p">(</span><span class="n">rg</span><span class="o">.</span><span class="n">_ix</span><span class="p">))</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">top</span><span class="o">.</span><span class="n">tt</span><span class="o">.</span><span class="n">residues2atoms_2d</span><span class="p">(</span><span class="n">rg</span><span class="o">.</span><span class="n">ix</span><span class="p">))</span>
 
     <span class="k">def</span> <span class="nf">get_segments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sg</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">top</span><span class="o">.</span><span class="n">tt</span><span class="o">.</span><span class="n">segments2atoms_2d</span><span class="p">(</span><span class="n">sg</span><span class="o">.</span><span class="n">_ix</span><span class="p">))</span></div>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">top</span><span class="o">.</span><span class="n">tt</span><span class="o">.</span><span class="n">segments2atoms_2d</span><span class="p">(</span><span class="n">sg</span><span class="o">.</span><span class="n">ix</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="Resindices"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Resindices">[docs]</a><span class="k">class</span> <span class="nc">Resindices</span><span class="p">(</span><span class="n">TopologyAttr</span><span class="p">):</span>
@@ -340,22 +390,22 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">attrname</span> <span class="o">=</span> <span class="s1">&#39;resindices&#39;</span>
     <span class="n">singular</span> <span class="o">=</span> <span class="s1">&#39;resindex&#39;</span>
-    <span class="n">target_classes</span> <span class="o">=</span> <span class="p">[</span><span class="n">Atom</span><span class="p">,</span> <span class="n">Residue</span><span class="p">]</span>
+    <span class="n">target_classes</span> <span class="o">=</span> <span class="p">[</span><span class="n">AtomGroup</span><span class="p">,</span> <span class="n">ResidueGroup</span><span class="p">,</span> <span class="n">SegmentGroup</span><span class="p">,</span> <span class="n">Atom</span><span class="p">,</span> <span class="n">Residue</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_guessed</span> <span class="o">=</span> <span class="kc">False</span>
 
     <span class="k">def</span> <span class="nf">get_atoms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ag</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">top</span><span class="o">.</span><span class="n">tt</span><span class="o">.</span><span class="n">atoms2residues</span><span class="p">(</span><span class="n">ag</span><span class="o">.</span><span class="n">_ix</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">top</span><span class="o">.</span><span class="n">tt</span><span class="o">.</span><span class="n">atoms2residues</span><span class="p">(</span><span class="n">ag</span><span class="o">.</span><span class="n">ix</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">get_residues</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rg</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">rg</span><span class="o">.</span><span class="n">_ix</span>
+        <span class="k">return</span> <span class="n">rg</span><span class="o">.</span><span class="n">ix</span>
 
     <span class="k">def</span> <span class="nf">set_residues</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rg</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">&quot;Residue indices are fixed; they cannot be reset&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">get_segments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sg</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">top</span><span class="o">.</span><span class="n">tt</span><span class="o">.</span><span class="n">segments2residues_2d</span><span class="p">(</span><span class="n">sg</span><span class="o">.</span><span class="n">_ix</span><span class="p">))</span></div>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">top</span><span class="o">.</span><span class="n">tt</span><span class="o">.</span><span class="n">segments2residues_2d</span><span class="p">(</span><span class="n">sg</span><span class="o">.</span><span class="n">ix</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="Segindices"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Segindices">[docs]</a><span class="k">class</span> <span class="nc">Segindices</span><span class="p">(</span><span class="n">TopologyAttr</span><span class="p">):</span>
@@ -373,19 +423,20 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">attrname</span> <span class="o">=</span> <span class="s1">&#39;segindices&#39;</span>
     <span class="n">singular</span> <span class="o">=</span> <span class="s1">&#39;segindex&#39;</span>
-    <span class="n">target_classes</span> <span class="o">=</span> <span class="p">[</span><span class="n">Atom</span><span class="p">,</span> <span class="n">Residue</span><span class="p">,</span> <span class="n">Segment</span><span class="p">]</span>
+    <span class="n">target_classes</span> <span class="o">=</span> <span class="p">[</span><span class="n">AtomGroup</span><span class="p">,</span> <span class="n">ResidueGroup</span><span class="p">,</span> <span class="n">SegmentGroup</span><span class="p">,</span>
+                      <span class="n">Atom</span><span class="p">,</span> <span class="n">Residue</span><span class="p">,</span> <span class="n">Segment</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_guessed</span> <span class="o">=</span> <span class="kc">False</span>
 
     <span class="k">def</span> <span class="nf">get_atoms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ag</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">top</span><span class="o">.</span><span class="n">tt</span><span class="o">.</span><span class="n">atoms2segments</span><span class="p">(</span><span class="n">ag</span><span class="o">.</span><span class="n">_ix</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">top</span><span class="o">.</span><span class="n">tt</span><span class="o">.</span><span class="n">atoms2segments</span><span class="p">(</span><span class="n">ag</span><span class="o">.</span><span class="n">ix</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">get_residues</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rg</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">top</span><span class="o">.</span><span class="n">tt</span><span class="o">.</span><span class="n">residues2segments</span><span class="p">(</span><span class="n">rg</span><span class="o">.</span><span class="n">_ix</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">top</span><span class="o">.</span><span class="n">tt</span><span class="o">.</span><span class="n">residues2segments</span><span class="p">(</span><span class="n">rg</span><span class="o">.</span><span class="n">ix</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">get_segments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sg</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">sg</span><span class="o">.</span><span class="n">_ix</span>
+        <span class="k">return</span> <span class="n">sg</span><span class="o">.</span><span class="n">ix</span>
 
     <span class="k">def</span> <span class="nf">set_segments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sg</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">&quot;Segment indices are fixed; they cannot be reset&quot;</span><span class="p">)</span></div>
@@ -399,14 +450,14 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">attrname</span> <span class="o">=</span> <span class="s1">&#39;atomattrs&#39;</span>
     <span class="n">singular</span> <span class="o">=</span> <span class="s1">&#39;atomattr&#39;</span>
-    <span class="n">target_classes</span> <span class="o">=</span> <span class="p">[</span><span class="n">Atom</span><span class="p">]</span>
+    <span class="n">target_classes</span> <span class="o">=</span> <span class="p">[</span><span class="n">AtomGroup</span><span class="p">,</span> <span class="n">ResidueGroup</span><span class="p">,</span> <span class="n">SegmentGroup</span><span class="p">,</span> <span class="n">Atom</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">get_atoms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ag</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">ag</span><span class="o">.</span><span class="n">_ix</span><span class="p">]</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">ag</span><span class="o">.</span><span class="n">ix</span><span class="p">]</span>
 
     <span class="nd">@_check_length</span>
     <span class="k">def</span> <span class="nf">set_atoms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ag</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">ag</span><span class="o">.</span><span class="n">_ix</span><span class="p">]</span> <span class="o">=</span> <span class="n">values</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">ag</span><span class="o">.</span><span class="n">ix</span><span class="p">]</span> <span class="o">=</span> <span class="n">values</span>
 
 <div class="viewcode-block" id="AtomAttr.get_residues"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.AtomAttr.get_residues">[docs]</a>    <span class="k">def</span> <span class="nf">get_residues</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rg</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;By default, the values for each atom present in the set of residues</span>
@@ -414,7 +465,7 @@
 <span class="sd">        attributes.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">aixs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">top</span><span class="o">.</span><span class="n">tt</span><span class="o">.</span><span class="n">residues2atoms_2d</span><span class="p">(</span><span class="n">rg</span><span class="o">.</span><span class="n">_ix</span><span class="p">)</span>
+        <span class="n">aixs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">top</span><span class="o">.</span><span class="n">tt</span><span class="o">.</span><span class="n">residues2atoms_2d</span><span class="p">(</span><span class="n">rg</span><span class="o">.</span><span class="n">ix</span><span class="p">)</span>
         <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">aix</span><span class="p">]</span> <span class="k">for</span> <span class="n">aix</span> <span class="ow">in</span> <span class="n">aixs</span><span class="p">]</span></div>
 
     <span class="k">def</span> <span class="nf">set_residues</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rg</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
@@ -426,7 +477,7 @@
 <span class="sd">        attributes.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">aixs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">top</span><span class="o">.</span><span class="n">tt</span><span class="o">.</span><span class="n">segments2atoms_2d</span><span class="p">(</span><span class="n">sg</span><span class="o">.</span><span class="n">_ix</span><span class="p">)</span>
+        <span class="n">aixs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">top</span><span class="o">.</span><span class="n">tt</span><span class="o">.</span><span class="n">segments2atoms_2d</span><span class="p">(</span><span class="n">sg</span><span class="o">.</span><span class="n">ix</span><span class="p">)</span>
         <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">aix</span><span class="p">]</span> <span class="k">for</span> <span class="n">aix</span> <span class="ow">in</span> <span class="n">aixs</span><span class="p">]</span></div>
 
     <span class="k">def</span> <span class="nf">set_segments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sg</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
@@ -439,7 +490,11 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">attrname</span> <span class="o">=</span> <span class="s1">&#39;ids&#39;</span>
     <span class="n">singular</span> <span class="o">=</span> <span class="s1">&#39;id&#39;</span>
-    <span class="n">per_object</span> <span class="o">=</span> <span class="s1">&#39;atom&#39;</span></div>
+    <span class="n">per_object</span> <span class="o">=</span> <span class="s1">&#39;atom&#39;</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_gen_initial_values</span><span class="p">(</span><span class="n">na</span><span class="p">,</span> <span class="n">nr</span><span class="p">,</span> <span class="n">ns</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">na</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span></div>
 
 
 <span class="c1"># TODO: update docs to property doc</span>
@@ -450,6 +505,10 @@
     <span class="n">singular</span> <span class="o">=</span> <span class="s1">&#39;name&#39;</span>
     <span class="n">per_object</span> <span class="o">=</span> <span class="s1">&#39;atom&#39;</span>
     <span class="n">transplants</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_gen_initial_values</span><span class="p">(</span><span class="n">na</span><span class="p">,</span> <span class="n">nr</span><span class="p">,</span> <span class="n">ns</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s1">&#39;&#39;</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">na</span><span class="p">)],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">getattr__</span><span class="p">(</span><span class="n">atomgroup</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
@@ -608,14 +667,22 @@
     <span class="sd">&quot;&quot;&quot;Type for each atom&quot;&quot;&quot;</span>
     <span class="n">attrname</span> <span class="o">=</span> <span class="s1">&#39;types&#39;</span>
     <span class="n">singular</span> <span class="o">=</span> <span class="s1">&#39;type&#39;</span>
-    <span class="n">per_object</span> <span class="o">=</span> <span class="s1">&#39;atom&#39;</span></div>
+    <span class="n">per_object</span> <span class="o">=</span> <span class="s1">&#39;atom&#39;</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_gen_initial_values</span><span class="p">(</span><span class="n">na</span><span class="p">,</span> <span class="n">nr</span><span class="p">,</span> <span class="n">ns</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s1">&#39;&#39;</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">na</span><span class="p">)],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span></div>
 
 
 <span class="c1"># TODO: update docs to property doc</span>
 <div class="viewcode-block" id="Elements"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Elements">[docs]</a><span class="k">class</span> <span class="nc">Elements</span><span class="p">(</span><span class="n">AtomAttr</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Element for each atom&quot;&quot;&quot;</span>
     <span class="n">attrname</span> <span class="o">=</span> <span class="s1">&#39;elements&#39;</span>
-    <span class="n">singular</span> <span class="o">=</span> <span class="s1">&#39;element&#39;</span></div>
+    <span class="n">singular</span> <span class="o">=</span> <span class="s1">&#39;element&#39;</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_gen_initial_values</span><span class="p">(</span><span class="n">na</span><span class="p">,</span> <span class="n">nr</span><span class="p">,</span> <span class="n">ns</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s1">&#39;&#39;</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">na</span><span class="p">)],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span></div>
 
 
 <span class="c1"># TODO: update docs to property doc</span>
@@ -623,7 +690,11 @@
     <span class="sd">&quot;&quot;&quot;Radii for each atom&quot;&quot;&quot;</span>
     <span class="n">attrname</span> <span class="o">=</span> <span class="s1">&#39;radii&#39;</span>
     <span class="n">singular</span> <span class="o">=</span> <span class="s1">&#39;radius&#39;</span>
-    <span class="n">per_object</span> <span class="o">=</span> <span class="s1">&#39;atom&#39;</span></div>
+    <span class="n">per_object</span> <span class="o">=</span> <span class="s1">&#39;atom&#39;</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_gen_initial_values</span><span class="p">(</span><span class="n">na</span><span class="p">,</span> <span class="n">nr</span><span class="p">,</span> <span class="n">ns</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">na</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="ChainIDs"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.ChainIDs">[docs]</a><span class="k">class</span> <span class="nc">ChainIDs</span><span class="p">(</span><span class="n">AtomAttr</span><span class="p">):</span>
@@ -635,21 +706,30 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">attrname</span> <span class="o">=</span> <span class="s1">&#39;chainIDs&#39;</span>
     <span class="n">singular</span> <span class="o">=</span> <span class="s1">&#39;chainID&#39;</span>
-    <span class="n">per_object</span> <span class="o">=</span> <span class="s1">&#39;atom&#39;</span></div>
+    <span class="n">per_object</span> <span class="o">=</span> <span class="s1">&#39;atom&#39;</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_gen_initial_values</span><span class="p">(</span><span class="n">na</span><span class="p">,</span> <span class="n">nr</span><span class="p">,</span> <span class="n">ns</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s1">&#39;&#39;</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">na</span><span class="p">)],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Tempfactors"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Tempfactors">[docs]</a><span class="k">class</span> <span class="nc">Tempfactors</span><span class="p">(</span><span class="n">AtomAttr</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Tempfactor for atoms&quot;&quot;&quot;</span>
     <span class="n">attrname</span> <span class="o">=</span> <span class="s1">&#39;tempfactors&#39;</span>
     <span class="n">singular</span> <span class="o">=</span> <span class="s1">&#39;tempfactor&#39;</span>
-    <span class="n">per_object</span> <span class="o">=</span> <span class="s1">&#39;atom&#39;</span></div>
+    <span class="n">per_object</span> <span class="o">=</span> <span class="s1">&#39;atom&#39;</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_gen_initial_values</span><span class="p">(</span><span class="n">na</span><span class="p">,</span> <span class="n">nr</span><span class="p">,</span> <span class="n">ns</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">na</span><span class="p">)</span></div>
 
 
 <span class="k">class</span> <span class="nc">Masses</span><span class="p">(</span><span class="n">AtomAttr</span><span class="p">):</span>
     <span class="n">attrname</span> <span class="o">=</span> <span class="s1">&#39;masses&#39;</span>
     <span class="n">singular</span> <span class="o">=</span> <span class="s1">&#39;mass&#39;</span>
     <span class="n">per_object</span> <span class="o">=</span> <span class="s1">&#39;atom&#39;</span>
-    <span class="n">target_classes</span> <span class="o">=</span> <span class="p">[</span><span class="n">Atom</span><span class="p">,</span> <span class="n">Residue</span><span class="p">,</span> <span class="n">Segment</span><span class="p">]</span>
+    <span class="n">target_classes</span> <span class="o">=</span> <span class="p">[</span><span class="n">AtomGroup</span><span class="p">,</span> <span class="n">ResidueGroup</span><span class="p">,</span> <span class="n">SegmentGroup</span><span class="p">,</span>
+                      <span class="n">Atom</span><span class="p">,</span> <span class="n">Residue</span><span class="p">,</span> <span class="n">Segment</span><span class="p">]</span>
     <span class="n">transplants</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
 
     <span class="n">groupdoc</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;Mass of each component in the Group.</span>
@@ -666,8 +746,12 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_guessed</span> <span class="o">=</span> <span class="n">guessed</span>
 
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_gen_initial_values</span><span class="p">(</span><span class="n">na</span><span class="p">,</span> <span class="n">nr</span><span class="p">,</span> <span class="n">ns</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">na</span><span class="p">)</span>
+
     <span class="k">def</span> <span class="nf">get_residues</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rg</span><span class="p">):</span>
-        <span class="n">resatoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">top</span><span class="o">.</span><span class="n">tt</span><span class="o">.</span><span class="n">residues2atoms_2d</span><span class="p">(</span><span class="n">rg</span><span class="o">.</span><span class="n">_ix</span><span class="p">)</span>
+        <span class="n">resatoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">top</span><span class="o">.</span><span class="n">tt</span><span class="o">.</span><span class="n">residues2atoms_2d</span><span class="p">(</span><span class="n">rg</span><span class="o">.</span><span class="n">ix</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">rg</span><span class="o">.</span><span class="n">_ix</span><span class="p">,</span> <span class="n">numbers</span><span class="o">.</span><span class="n">Integral</span><span class="p">):</span>
             <span class="c1"># for a single residue</span>
@@ -681,7 +765,7 @@
         <span class="k">return</span> <span class="n">masses</span>
 
     <span class="k">def</span> <span class="nf">get_segments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sg</span><span class="p">):</span>
-        <span class="n">segatoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">top</span><span class="o">.</span><span class="n">tt</span><span class="o">.</span><span class="n">segments2atoms_2d</span><span class="p">(</span><span class="n">sg</span><span class="o">.</span><span class="n">_ix</span><span class="p">)</span>
+        <span class="n">segatoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">top</span><span class="o">.</span><span class="n">tt</span><span class="o">.</span><span class="n">segments2atoms_2d</span><span class="p">(</span><span class="n">sg</span><span class="o">.</span><span class="n">ix</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sg</span><span class="o">.</span><span class="n">_ix</span><span class="p">,</span> <span class="n">numbers</span><span class="o">.</span><span class="n">Integral</span><span class="p">):</span>
             <span class="c1"># for a single segment</span>
@@ -989,11 +1073,16 @@
     <span class="n">attrname</span> <span class="o">=</span> <span class="s1">&#39;charges&#39;</span>
     <span class="n">singular</span> <span class="o">=</span> <span class="s1">&#39;charge&#39;</span>
     <span class="n">per_object</span> <span class="o">=</span> <span class="s1">&#39;atom&#39;</span>
-    <span class="n">target_classes</span> <span class="o">=</span> <span class="p">[</span><span class="n">Atom</span><span class="p">,</span> <span class="n">Residue</span><span class="p">,</span> <span class="n">Segment</span><span class="p">]</span>
+    <span class="n">target_classes</span> <span class="o">=</span> <span class="p">[</span><span class="n">AtomGroup</span><span class="p">,</span> <span class="n">ResidueGroup</span><span class="p">,</span> <span class="n">SegmentGroup</span><span class="p">,</span>
+                      <span class="n">Atom</span><span class="p">,</span> <span class="n">Residue</span><span class="p">,</span> <span class="n">Segment</span><span class="p">]</span>
     <span class="n">transplants</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
 
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_gen_initial_values</span><span class="p">(</span><span class="n">na</span><span class="p">,</span> <span class="n">nr</span><span class="p">,</span> <span class="n">ns</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">na</span><span class="p">)</span>
+
     <span class="k">def</span> <span class="nf">get_residues</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rg</span><span class="p">):</span>
-        <span class="n">resatoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">top</span><span class="o">.</span><span class="n">tt</span><span class="o">.</span><span class="n">residues2atoms_2d</span><span class="p">(</span><span class="n">rg</span><span class="o">.</span><span class="n">_ix</span><span class="p">)</span>
+        <span class="n">resatoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">top</span><span class="o">.</span><span class="n">tt</span><span class="o">.</span><span class="n">residues2atoms_2d</span><span class="p">(</span><span class="n">rg</span><span class="o">.</span><span class="n">ix</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">rg</span><span class="o">.</span><span class="n">_ix</span><span class="p">,</span> <span class="n">numbers</span><span class="o">.</span><span class="n">Integral</span><span class="p">):</span>
             <span class="n">charges</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">resatoms</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
@@ -1005,7 +1094,7 @@
         <span class="k">return</span> <span class="n">charges</span>
 
     <span class="k">def</span> <span class="nf">get_segments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sg</span><span class="p">):</span>
-        <span class="n">segatoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">top</span><span class="o">.</span><span class="n">tt</span><span class="o">.</span><span class="n">segments2atoms_2d</span><span class="p">(</span><span class="n">sg</span><span class="o">.</span><span class="n">_ix</span><span class="p">)</span>
+        <span class="n">segatoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">top</span><span class="o">.</span><span class="n">tt</span><span class="o">.</span><span class="n">segments2atoms_2d</span><span class="p">(</span><span class="n">sg</span><span class="o">.</span><span class="n">ix</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sg</span><span class="o">.</span><span class="n">_ix</span><span class="p">,</span> <span class="n">numbers</span><span class="o">.</span><span class="n">Integral</span><span class="p">):</span>
             <span class="c1"># for a single segment</span>
@@ -1031,7 +1120,11 @@
     <span class="sd">&quot;&quot;&quot;Crystallographic B-factors in A**2 for each atom&quot;&quot;&quot;</span>
     <span class="n">attrname</span> <span class="o">=</span> <span class="s1">&#39;bfactors&#39;</span>
     <span class="n">singular</span> <span class="o">=</span> <span class="s1">&#39;bfactor&#39;</span>
-    <span class="n">per_object</span> <span class="o">=</span> <span class="s1">&#39;atom&#39;</span></div>
+    <span class="n">per_object</span> <span class="o">=</span> <span class="s1">&#39;atom&#39;</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_gen_initial_values</span><span class="p">(</span><span class="n">na</span><span class="p">,</span> <span class="n">nr</span><span class="p">,</span> <span class="n">ns</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">na</span><span class="p">)</span></div>
 
 
 <span class="c1"># TODO: update docs to property doc</span>
@@ -1040,56 +1133,54 @@
     <span class="n">singular</span> <span class="o">=</span> <span class="s1">&#39;occupancy&#39;</span>
     <span class="n">per_object</span> <span class="o">=</span> <span class="s1">&#39;atom&#39;</span>
 
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_gen_initial_values</span><span class="p">(</span><span class="n">na</span><span class="p">,</span> <span class="n">nr</span><span class="p">,</span> <span class="n">ns</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">na</span><span class="p">)</span>
+
 
 <span class="c1"># TODO: update docs to property doc</span>
 <div class="viewcode-block" id="AltLocs"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.AltLocs">[docs]</a><span class="k">class</span> <span class="nc">AltLocs</span><span class="p">(</span><span class="n">AtomAttr</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;AltLocs for each atom&quot;&quot;&quot;</span>
     <span class="n">attrname</span> <span class="o">=</span> <span class="s1">&#39;altLocs&#39;</span>
     <span class="n">singular</span> <span class="o">=</span> <span class="s1">&#39;altLoc&#39;</span>
-    <span class="n">per_object</span> <span class="o">=</span> <span class="s1">&#39;atom&#39;</span></div>
+    <span class="n">per_object</span> <span class="o">=</span> <span class="s1">&#39;atom&#39;</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_gen_initial_values</span><span class="p">(</span><span class="n">na</span><span class="p">,</span> <span class="n">nr</span><span class="p">,</span> <span class="n">ns</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s1">&#39;&#39;</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">na</span><span class="p">)],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span></div>
 
 
-<span class="c1"># residue attributes</span>
-
-<div class="viewcode-block" id="ResidueAttr"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.ResidueAttr">[docs]</a><span class="k">class</span> <span class="nc">ResidueAttr</span><span class="p">(</span><span class="n">TopologyAttr</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Base class for Topology attributes.</span>
-
-<span class="sd">    .. note::   This class is intended to be subclassed, and mostly amounts to</span>
-<span class="sd">                a skeleton. The methods here should be present in all</span>
-<span class="sd">                :class:`TopologyAttr` child classes, but by default they raise</span>
-<span class="sd">                appropriate exceptions.</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="k">class</span> <span class="nc">ResidueAttr</span><span class="p">(</span><span class="n">TopologyAttr</span><span class="p">):</span>
     <span class="n">attrname</span> <span class="o">=</span> <span class="s1">&#39;residueattrs&#39;</span>
     <span class="n">singular</span> <span class="o">=</span> <span class="s1">&#39;residueattr&#39;</span>
-    <span class="n">target_classes</span> <span class="o">=</span> <span class="p">[</span><span class="n">Residue</span><span class="p">]</span>
+    <span class="n">target_classes</span> <span class="o">=</span> <span class="p">[</span><span class="n">AtomGroup</span><span class="p">,</span> <span class="n">ResidueGroup</span><span class="p">,</span> <span class="n">SegmentGroup</span><span class="p">,</span> <span class="n">Residue</span><span class="p">]</span>
     <span class="n">per_object</span> <span class="o">=</span> <span class="s1">&#39;residue&#39;</span>
 
     <span class="k">def</span> <span class="nf">get_atoms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ag</span><span class="p">):</span>
-        <span class="n">rix</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">top</span><span class="o">.</span><span class="n">tt</span><span class="o">.</span><span class="n">atoms2residues</span><span class="p">(</span><span class="n">ag</span><span class="o">.</span><span class="n">_ix</span><span class="p">)</span>
+        <span class="n">rix</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">top</span><span class="o">.</span><span class="n">tt</span><span class="o">.</span><span class="n">atoms2residues</span><span class="p">(</span><span class="n">ag</span><span class="o">.</span><span class="n">ix</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">rix</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">set_atoms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ag</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
         <span class="k">raise</span> <span class="n">_wronglevel_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ag</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">get_residues</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rg</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">rg</span><span class="o">.</span><span class="n">_ix</span><span class="p">]</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">rg</span><span class="o">.</span><span class="n">ix</span><span class="p">]</span>
 
     <span class="nd">@_check_length</span>
     <span class="k">def</span> <span class="nf">set_residues</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rg</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">rg</span><span class="o">.</span><span class="n">_ix</span><span class="p">]</span> <span class="o">=</span> <span class="n">values</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">rg</span><span class="o">.</span><span class="n">ix</span><span class="p">]</span> <span class="o">=</span> <span class="n">values</span>
 
-<div class="viewcode-block" id="ResidueAttr.get_segments"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.ResidueAttr.get_segments">[docs]</a>    <span class="k">def</span> <span class="nf">get_segments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sg</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">get_segments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sg</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;By default, the values for each residue present in the set of</span>
 <span class="sd">        segments are returned in a single array. This behavior can be overriden</span>
 <span class="sd">        in child attributes.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">rixs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">top</span><span class="o">.</span><span class="n">tt</span><span class="o">.</span><span class="n">segments2residues_2d</span><span class="p">(</span><span class="n">sg</span><span class="o">.</span><span class="n">_ix</span><span class="p">)</span>
-        <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">rix</span><span class="p">]</span> <span class="k">for</span> <span class="n">rix</span> <span class="ow">in</span> <span class="n">rixs</span><span class="p">]</span></div>
+        <span class="n">rixs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">top</span><span class="o">.</span><span class="n">tt</span><span class="o">.</span><span class="n">segments2residues_2d</span><span class="p">(</span><span class="n">sg</span><span class="o">.</span><span class="n">ix</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">rix</span><span class="p">]</span> <span class="k">for</span> <span class="n">rix</span> <span class="ow">in</span> <span class="n">rixs</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">set_segments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sg</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="n">_wronglevel_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sg</span><span class="p">)</span></div>
+        <span class="k">raise</span> <span class="n">_wronglevel_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sg</span><span class="p">)</span>
 
 
 <span class="c1"># TODO: update docs to property doc</span>
@@ -1097,15 +1188,23 @@
     <span class="sd">&quot;&quot;&quot;Residue ID&quot;&quot;&quot;</span>
     <span class="n">attrname</span> <span class="o">=</span> <span class="s1">&#39;resids&#39;</span>
     <span class="n">singular</span> <span class="o">=</span> <span class="s1">&#39;resid&#39;</span>
-    <span class="n">target_classes</span> <span class="o">=</span> <span class="p">[</span><span class="n">Atom</span><span class="p">,</span> <span class="n">Residue</span><span class="p">]</span></div>
+    <span class="n">target_classes</span> <span class="o">=</span> <span class="p">[</span><span class="n">AtomGroup</span><span class="p">,</span> <span class="n">ResidueGroup</span><span class="p">,</span> <span class="n">SegmentGroup</span><span class="p">,</span> <span class="n">Atom</span><span class="p">,</span> <span class="n">Residue</span><span class="p">]</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_gen_initial_values</span><span class="p">(</span><span class="n">na</span><span class="p">,</span> <span class="n">nr</span><span class="p">,</span> <span class="n">ns</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">nr</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span></div>
 
 
 <span class="c1"># TODO: update docs to property doc</span>
 <span class="k">class</span> <span class="nc">Resnames</span><span class="p">(</span><span class="n">ResidueAttr</span><span class="p">):</span>
     <span class="n">attrname</span> <span class="o">=</span> <span class="s1">&#39;resnames&#39;</span>
     <span class="n">singular</span> <span class="o">=</span> <span class="s1">&#39;resname&#39;</span>
-    <span class="n">target_classes</span> <span class="o">=</span> <span class="p">[</span><span class="n">Atom</span><span class="p">,</span> <span class="n">Residue</span><span class="p">]</span>
+    <span class="n">target_classes</span> <span class="o">=</span> <span class="p">[</span><span class="n">AtomGroup</span><span class="p">,</span> <span class="n">ResidueGroup</span><span class="p">,</span> <span class="n">SegmentGroup</span><span class="p">,</span> <span class="n">Atom</span><span class="p">,</span> <span class="n">Residue</span><span class="p">]</span>
     <span class="n">transplants</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_gen_initial_values</span><span class="p">(</span><span class="n">na</span><span class="p">,</span> <span class="n">nr</span><span class="p">,</span> <span class="n">ns</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s1">&#39;&#39;</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nr</span><span class="p">)],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">getattr__</span><span class="p">(</span><span class="n">residuegroup</span><span class="p">,</span> <span class="n">resname</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
@@ -1262,13 +1361,21 @@
 <span class="k">class</span> <span class="nc">Resnums</span><span class="p">(</span><span class="n">ResidueAttr</span><span class="p">):</span>
     <span class="n">attrname</span> <span class="o">=</span> <span class="s1">&#39;resnums&#39;</span>
     <span class="n">singular</span> <span class="o">=</span> <span class="s1">&#39;resnum&#39;</span>
-    <span class="n">target_classes</span> <span class="o">=</span> <span class="p">[</span><span class="n">Atom</span><span class="p">,</span> <span class="n">Residue</span><span class="p">]</span>
+    <span class="n">target_classes</span> <span class="o">=</span> <span class="p">[</span><span class="n">AtomGroup</span><span class="p">,</span> <span class="n">ResidueGroup</span><span class="p">,</span> <span class="n">SegmentGroup</span><span class="p">,</span> <span class="n">Atom</span><span class="p">,</span> <span class="n">Residue</span><span class="p">]</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_gen_initial_values</span><span class="p">(</span><span class="n">na</span><span class="p">,</span> <span class="n">nr</span><span class="p">,</span> <span class="n">ns</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">nr</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="ICodes"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.ICodes">[docs]</a><span class="k">class</span> <span class="nc">ICodes</span><span class="p">(</span><span class="n">ResidueAttr</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Insertion code for Atoms&quot;&quot;&quot;</span>
     <span class="n">attrname</span> <span class="o">=</span> <span class="s1">&#39;icodes&#39;</span>
-    <span class="n">singular</span> <span class="o">=</span> <span class="s1">&#39;icode&#39;</span></div>
+    <span class="n">singular</span> <span class="o">=</span> <span class="s1">&#39;icode&#39;</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_gen_initial_values</span><span class="p">(</span><span class="n">na</span><span class="p">,</span> <span class="n">nr</span><span class="p">,</span> <span class="n">ns</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s1">&#39;&#39;</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nr</span><span class="p">)],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Moltypes"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Moltypes">[docs]</a><span class="k">class</span> <span class="nc">Moltypes</span><span class="p">(</span><span class="n">ResidueAttr</span><span class="p">):</span>
@@ -1278,7 +1385,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">attrname</span> <span class="o">=</span> <span class="s1">&#39;moltypes&#39;</span>
     <span class="n">singular</span> <span class="o">=</span> <span class="s1">&#39;moltype&#39;</span>
-    <span class="n">target_classes</span> <span class="o">=</span> <span class="p">[</span><span class="n">Atom</span><span class="p">,</span> <span class="n">Residue</span><span class="p">]</span></div>
+    <span class="n">target_classes</span> <span class="o">=</span> <span class="p">[</span><span class="n">AtomGroup</span><span class="p">,</span> <span class="n">ResidueGroup</span><span class="p">,</span> <span class="n">SegmentGroup</span><span class="p">,</span> <span class="n">Atom</span><span class="p">,</span> <span class="n">Residue</span><span class="p">]</span></div>
 
 
 <span class="c1"># segment attributes</span>
@@ -1289,37 +1396,42 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">attrname</span> <span class="o">=</span> <span class="s1">&#39;segmentattrs&#39;</span>
     <span class="n">singular</span> <span class="o">=</span> <span class="s1">&#39;segmentattr&#39;</span>
-    <span class="n">target_classes</span> <span class="o">=</span> <span class="p">[</span><span class="n">Segment</span><span class="p">]</span>
+    <span class="n">target_classes</span> <span class="o">=</span> <span class="p">[</span><span class="n">AtomGroup</span><span class="p">,</span> <span class="n">ResidueGroup</span><span class="p">,</span> <span class="n">SegmentGroup</span><span class="p">,</span> <span class="n">Segment</span><span class="p">]</span>
     <span class="n">per_object</span> <span class="o">=</span> <span class="s1">&#39;segment&#39;</span>
 
     <span class="k">def</span> <span class="nf">get_atoms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ag</span><span class="p">):</span>
-        <span class="n">six</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">top</span><span class="o">.</span><span class="n">tt</span><span class="o">.</span><span class="n">atoms2segments</span><span class="p">(</span><span class="n">ag</span><span class="o">.</span><span class="n">_ix</span><span class="p">)</span>
+        <span class="n">six</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">top</span><span class="o">.</span><span class="n">tt</span><span class="o">.</span><span class="n">atoms2segments</span><span class="p">(</span><span class="n">ag</span><span class="o">.</span><span class="n">ix</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">six</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">set_atoms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ag</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
         <span class="k">raise</span> <span class="n">_wronglevel_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ag</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">get_residues</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rg</span><span class="p">):</span>
-        <span class="n">six</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">top</span><span class="o">.</span><span class="n">tt</span><span class="o">.</span><span class="n">residues2segments</span><span class="p">(</span><span class="n">rg</span><span class="o">.</span><span class="n">_ix</span><span class="p">)</span>
+        <span class="n">six</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">top</span><span class="o">.</span><span class="n">tt</span><span class="o">.</span><span class="n">residues2segments</span><span class="p">(</span><span class="n">rg</span><span class="o">.</span><span class="n">ix</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">six</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">set_residues</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rg</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
         <span class="k">raise</span> <span class="n">_wronglevel_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rg</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">get_segments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sg</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">sg</span><span class="o">.</span><span class="n">_ix</span><span class="p">]</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">sg</span><span class="o">.</span><span class="n">ix</span><span class="p">]</span>
 
     <span class="nd">@_check_length</span>
     <span class="k">def</span> <span class="nf">set_segments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sg</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">sg</span><span class="o">.</span><span class="n">_ix</span><span class="p">]</span> <span class="o">=</span> <span class="n">values</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">sg</span><span class="o">.</span><span class="n">ix</span><span class="p">]</span> <span class="o">=</span> <span class="n">values</span></div>
 
 
 <span class="c1"># TODO: update docs to property doc</span>
 <span class="k">class</span> <span class="nc">Segids</span><span class="p">(</span><span class="n">SegmentAttr</span><span class="p">):</span>
     <span class="n">attrname</span> <span class="o">=</span> <span class="s1">&#39;segids&#39;</span>
     <span class="n">singular</span> <span class="o">=</span> <span class="s1">&#39;segid&#39;</span>
-    <span class="n">target_classes</span> <span class="o">=</span> <span class="p">[</span><span class="n">Atom</span><span class="p">,</span> <span class="n">Residue</span><span class="p">,</span> <span class="n">Segment</span><span class="p">]</span>
+    <span class="n">target_classes</span> <span class="o">=</span> <span class="p">[</span><span class="n">AtomGroup</span><span class="p">,</span> <span class="n">ResidueGroup</span><span class="p">,</span> <span class="n">SegmentGroup</span><span class="p">,</span>
+                      <span class="n">Atom</span><span class="p">,</span> <span class="n">Residue</span><span class="p">,</span> <span class="n">Segment</span><span class="p">]</span>
     <span class="n">transplants</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_gen_initial_values</span><span class="p">(</span><span class="n">na</span><span class="p">,</span> <span class="n">nr</span><span class="p">,</span> <span class="n">ns</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s1">&#39;&#39;</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ns</span><span class="p">)],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">getattr__</span><span class="p">(</span><span class="n">segmentgroup</span><span class="p">,</span> <span class="n">segid</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
@@ -1419,17 +1531,17 @@
     <span class="k">def</span> <span class="nf">get_atoms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ag</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">unique_bonds</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="p">(</span>
-                <span class="o">*</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_bondDict</span><span class="p">[</span><span class="n">a</span><span class="p">]</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">ag</span><span class="o">.</span><span class="n">_ix</span><span class="p">]))</span>
+                <span class="o">*</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_bondDict</span><span class="p">[</span><span class="n">a</span><span class="p">]</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">ag</span><span class="o">.</span><span class="n">ix</span><span class="p">]))</span>
         <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
             <span class="c1"># maybe we got passed an Atom</span>
-            <span class="n">unique_bonds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bondDict</span><span class="p">[</span><span class="n">ag</span><span class="o">.</span><span class="n">_ix</span><span class="p">]</span>
+            <span class="n">unique_bonds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bondDict</span><span class="p">[</span><span class="n">ag</span><span class="o">.</span><span class="n">ix</span><span class="p">]</span>
         <span class="n">bond_idx</span><span class="p">,</span> <span class="n">types</span><span class="p">,</span> <span class="n">guessed</span><span class="p">,</span> <span class="n">order</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hsplit</span><span class="p">(</span>
             <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">unique_bonds</span><span class="p">)),</span> <span class="mi">4</span><span class="p">)</span>
         <span class="n">bond_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">bond_idx</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
         <span class="n">types</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
         <span class="n">guessed</span> <span class="o">=</span> <span class="n">guessed</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
         <span class="n">order</span> <span class="o">=</span> <span class="n">order</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
-        <span class="k">return</span> <span class="n">TopologyGroup</span><span class="p">(</span><span class="n">bond_idx</span><span class="p">,</span> <span class="n">ag</span><span class="o">.</span><span class="n">_u</span><span class="p">,</span>
+        <span class="k">return</span> <span class="n">TopologyGroup</span><span class="p">(</span><span class="n">bond_idx</span><span class="p">,</span> <span class="n">ag</span><span class="o">.</span><span class="n">universe</span><span class="p">,</span>
                              <span class="bp">self</span><span class="o">.</span><span class="n">singular</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
                              <span class="n">types</span><span class="p">,</span>
                              <span class="n">guessed</span><span class="p">,</span>
@@ -1476,7 +1588,7 @@
 <div class="viewcode-block" id="Bonds.bonded_atoms"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Bonds.bonded_atoms">[docs]</a>    <span class="k">def</span> <span class="nf">bonded_atoms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;An AtomGroup of all atoms bonded to this Atom&quot;&quot;&quot;</span>
         <span class="n">idx</span> <span class="o">=</span> <span class="p">[</span><span class="n">b</span><span class="o">.</span><span class="n">partner</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">index</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">bonds</span><span class="p">]</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_u</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span></div>
 
     <span class="n">transplants</span><span class="p">[</span><span class="n">Atom</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
         <span class="p">(</span><span class="s1">&#39;bonded_atoms&#39;</span><span class="p">,</span> <span class="nb">property</span><span class="p">(</span><span class="n">bonded_atoms</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span>

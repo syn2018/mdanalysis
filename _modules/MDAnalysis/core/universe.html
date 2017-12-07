@@ -139,14 +139,15 @@
 <span class="kn">import</span> <span class="nn">MDAnalysis</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 
-<span class="kn">from</span> <span class="nn">..</span> <span class="k">import</span> <span class="n">_ANCHOR_UNIVERSES</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="k">import</span> <span class="n">_ANCHOR_UNIVERSES</span><span class="p">,</span> <span class="n">_TOPOLOGY_ATTRS</span>
 <span class="kn">from</span> <span class="nn">..exceptions</span> <span class="k">import</span> <span class="n">NoDataError</span>
 <span class="kn">from</span> <span class="nn">..lib</span> <span class="k">import</span> <span class="n">util</span>
 <span class="kn">from</span> <span class="nn">..lib.log</span> <span class="k">import</span> <span class="n">ProgressMeter</span><span class="p">,</span> <span class="n">_set_verbose</span>
 <span class="kn">from</span> <span class="nn">..lib.util</span> <span class="k">import</span> <span class="n">cached</span><span class="p">,</span> <span class="n">NamedStream</span><span class="p">,</span> <span class="n">isstream</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">groups</span>
 <span class="kn">from</span> <span class="nn">._get_readers</span> <span class="k">import</span> <span class="n">get_reader_for</span><span class="p">,</span> <span class="n">get_parser_for</span>
-<span class="kn">from</span> <span class="nn">.groups</span> <span class="k">import</span> <span class="p">(</span><span class="n">GroupBase</span><span class="p">,</span> <span class="n">Atom</span><span class="p">,</span> <span class="n">Residue</span><span class="p">,</span> <span class="n">Segment</span><span class="p">,</span>
+<span class="kn">from</span> <span class="nn">.groups</span> <span class="k">import</span> <span class="p">(</span><span class="n">ComponentBase</span><span class="p">,</span> <span class="n">GroupBase</span><span class="p">,</span>
+                     <span class="n">Atom</span><span class="p">,</span> <span class="n">Residue</span><span class="p">,</span> <span class="n">Segment</span><span class="p">,</span>
                      <span class="n">AtomGroup</span><span class="p">,</span> <span class="n">ResidueGroup</span><span class="p">,</span> <span class="n">SegmentGroup</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">.topology</span> <span class="k">import</span> <span class="n">Topology</span>
 <span class="kn">from</span> <span class="nn">.topologyattrs</span> <span class="k">import</span> <span class="n">AtomAttr</span><span class="p">,</span> <span class="n">ResidueAttr</span><span class="p">,</span> <span class="n">SegmentAttr</span>
@@ -717,8 +718,52 @@
         <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_trajectory</span>  <span class="c1"># guarantees that files are closed (?)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_trajectory</span> <span class="o">=</span> <span class="n">value</span>
 
-<div class="viewcode-block" id="Universe.add_TopologyAttr"><a class="viewcode-back" href="../../../documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe.add_TopologyAttr">[docs]</a>    <span class="k">def</span> <span class="nf">add_TopologyAttr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">topologyattr</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Add a new topology attribute.&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="Universe.add_TopologyAttr"><a class="viewcode-back" href="../../../documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe.add_TopologyAttr">[docs]</a>    <span class="k">def</span> <span class="nf">add_TopologyAttr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">topologyattr</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Add a new topology attribute to the Universe</span>
+
+<span class="sd">        Adding a TopologyAttribute to the Universe makes it available to</span>
+<span class="sd">        all AtomGroups etc throughout the Universe.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        topologyattr : TopologyAttr or string</span>
+<span class="sd">          Either a MDAnalysis TopologyAttr object or the name of a possible</span>
+<span class="sd">          topology attribute.</span>
+<span class="sd">        values : np.ndarray, optional</span>
+<span class="sd">          If initiating an attribute from a string, the initial values to</span>
+<span class="sd">          use.  If not supplied, the new TopologyAttribute will have empty</span>
+<span class="sd">          or zero values.</span>
+
+<span class="sd">        Example</span>
+<span class="sd">        -------</span>
+<span class="sd">        For example to add bfactors to a Universe:</span>
+
+<span class="sd">        &gt;&gt;&gt; u.add_TopologyAttr(&#39;bfactors&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; u.atoms.bfactors</span>
+<span class="sd">        array([ 0.,  0.,  0., ...,  0.,  0.,  0.])</span>
+
+<span class="sd">        .. versionchanged:: 0.17.0</span>
+<span class="sd">           Can now also add TopologyAttrs with a string of the name of the</span>
+<span class="sd">           attribute to add (eg &#39;charges&#39;), can also supply initial values</span>
+<span class="sd">           using values keyword.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">topologyattr</span><span class="p">,</span> <span class="n">six</span><span class="o">.</span><span class="n">string_types</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">tcls</span> <span class="o">=</span> <span class="n">_TOPOLOGY_ATTRS</span><span class="p">[</span><span class="n">topologyattr</span><span class="p">]</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;Unrecognised topology attribute name: &#39;</span><span class="si">{}</span><span class="s2">&#39;.&quot;</span>
+                    <span class="s2">&quot;  Possible values: &#39;</span><span class="si">{}</span><span class="s2">&#39;</span><span class="se">\n</span><span class="s2">&quot;</span>
+                    <span class="s2">&quot;To raise an issue go to: http://issues.mdanalysis.org&quot;</span>
+                    <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="n">topologyattr</span><span class="p">,</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">_TOPOLOGY_ATTRS</span><span class="o">.</span><span class="n">keys</span><span class="p">())))</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">topologyattr</span> <span class="o">=</span> <span class="n">tcls</span><span class="o">.</span><span class="n">from_blank</span><span class="p">(</span>
+                    <span class="n">n_atoms</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span>
+                    <span class="n">n_residues</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">n_residues</span><span class="p">,</span>
+                    <span class="n">n_segments</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">n_segments</span><span class="p">,</span>
+                    <span class="n">values</span><span class="o">=</span><span class="n">values</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">add_TopologyAttr</span><span class="p">(</span><span class="n">topologyattr</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_process_attr</span><span class="p">(</span><span class="n">topologyattr</span><span class="p">)</span></div>
 
@@ -743,28 +788,18 @@
                                  <span class="n">n</span><span class="o">=</span><span class="n">n_dict</span><span class="p">[</span><span class="n">attr</span><span class="o">.</span><span class="n">per_object</span><span class="p">],</span>
                                  <span class="n">m</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">attr</span><span class="p">)))</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_class_bases</span><span class="p">[</span><span class="n">GroupBase</span><span class="p">]</span><span class="o">.</span><span class="n">_add_prop</span><span class="p">(</span><span class="n">attr</span><span class="p">)</span>
-
         <span class="k">for</span> <span class="bp">cls</span> <span class="ow">in</span> <span class="n">attr</span><span class="o">.</span><span class="n">target_classes</span><span class="p">:</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_class_bases</span><span class="p">[</span><span class="bp">cls</span><span class="p">]</span><span class="o">.</span><span class="n">_add_prop</span><span class="p">(</span><span class="n">attr</span><span class="p">)</span>
-            <span class="k">except</span> <span class="p">(</span><span class="ne">KeyError</span><span class="p">,</span> <span class="ne">AttributeError</span><span class="p">):</span>
-                <span class="k">pass</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_class_bases</span><span class="p">[</span><span class="bp">cls</span><span class="p">]</span><span class="o">.</span><span class="n">_add_prop</span><span class="p">(</span><span class="n">attr</span><span class="p">)</span>
 
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">transplants</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">transplants</span>
-        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-            <span class="c1"># not every Attribute will have a transplant dict</span>
-            <span class="k">pass</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="c1"># Group transplants</span>
-            <span class="k">for</span> <span class="bp">cls</span> <span class="ow">in</span> <span class="p">(</span><span class="n">Atom</span><span class="p">,</span> <span class="n">Residue</span><span class="p">,</span> <span class="n">Segment</span><span class="p">,</span> <span class="n">GroupBase</span><span class="p">,</span>
-                        <span class="n">AtomGroup</span><span class="p">,</span> <span class="n">ResidueGroup</span><span class="p">,</span> <span class="n">SegmentGroup</span><span class="p">):</span>
-                <span class="k">for</span> <span class="n">funcname</span><span class="p">,</span> <span class="n">meth</span> <span class="ow">in</span> <span class="n">transplants</span><span class="p">[</span><span class="bp">cls</span><span class="p">]:</span>
-                    <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_class_bases</span><span class="p">[</span><span class="bp">cls</span><span class="p">],</span> <span class="n">funcname</span><span class="p">,</span> <span class="n">meth</span><span class="p">)</span>
-            <span class="c1"># Universe transplants</span>
-            <span class="k">for</span> <span class="n">funcname</span><span class="p">,</span> <span class="n">meth</span> <span class="ow">in</span> <span class="n">transplants</span><span class="p">[</span><span class="s1">&#39;Universe&#39;</span><span class="p">]:</span>
-                <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span> <span class="n">funcname</span><span class="p">,</span> <span class="n">meth</span><span class="p">)</span>
+        <span class="c1"># TODO: Try and shove this into cls._add_prop</span>
+        <span class="c1"># Group transplants</span>
+        <span class="k">for</span> <span class="bp">cls</span> <span class="ow">in</span> <span class="p">(</span><span class="n">Atom</span><span class="p">,</span> <span class="n">Residue</span><span class="p">,</span> <span class="n">Segment</span><span class="p">,</span> <span class="n">GroupBase</span><span class="p">,</span>
+                    <span class="n">AtomGroup</span><span class="p">,</span> <span class="n">ResidueGroup</span><span class="p">,</span> <span class="n">SegmentGroup</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">funcname</span><span class="p">,</span> <span class="n">meth</span> <span class="ow">in</span> <span class="n">attr</span><span class="o">.</span><span class="n">transplants</span><span class="p">[</span><span class="bp">cls</span><span class="p">]:</span>
+                <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_class_bases</span><span class="p">[</span><span class="bp">cls</span><span class="p">],</span> <span class="n">funcname</span><span class="p">,</span> <span class="n">meth</span><span class="p">)</span>
+        <span class="c1"># Universe transplants</span>
+        <span class="k">for</span> <span class="n">funcname</span><span class="p">,</span> <span class="n">meth</span> <span class="ow">in</span> <span class="n">attr</span><span class="o">.</span><span class="n">transplants</span><span class="p">[</span><span class="s1">&#39;Universe&#39;</span><span class="p">]:</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span> <span class="n">funcname</span><span class="p">,</span> <span class="n">meth</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Universe.add_Residue"><a class="viewcode-back" href="../../../documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe.add_Residue">[docs]</a>    <span class="k">def</span> <span class="nf">add_Residue</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">segment</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">attrs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Add a new Residue to this Universe</span>

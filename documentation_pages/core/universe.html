@@ -251,8 +251,37 @@ Segment</td>
 
 <dl class="method">
 <dt id="MDAnalysis.core.universe.Universe.add_TopologyAttr">
-<code class="descname">add_TopologyAttr</code><span class="sig-paren">(</span><em>topologyattr</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/universe.html#Universe.add_TopologyAttr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.universe.Universe.add_TopologyAttr" title="Permalink to this definition">¶</a></dt>
-<dd><p>Add a new topology attribute.</p>
+<code class="descname">add_TopologyAttr</code><span class="sig-paren">(</span><em>topologyattr</em>, <em>values=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/universe.html#Universe.add_TopologyAttr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.universe.Universe.add_TopologyAttr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a new topology attribute to the Universe</p>
+<p>Adding a TopologyAttribute to the Universe makes it available to
+all AtomGroups etc throughout the Universe.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>topologyattr</strong> (<a class="reference internal" href="topologyattrs.html#MDAnalysis.core.topologyattrs.TopologyAttr" title="MDAnalysis.core.topologyattrs.TopologyAttr"><em>TopologyAttr</em></a><em> or </em><a class="reference external" href="https://docs.python.org/2/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) – Either a MDAnalysis TopologyAttr object or the name of a possible
+topology attribute.</li>
+<li><strong>values</strong> (<em>np.ndarray</em><em>, </em><em>optional</em>) – If initiating an attribute from a string, the initial values to
+use.  If not supplied, the new TopologyAttribute will have empty
+or zero values.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Example</p>
+<p>For example to add bfactors to a Universe:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">u</span><span class="o">.</span><span class="n">add_TopologyAttr</span><span class="p">(</span><span class="s1">&#39;bfactors&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">bfactors</span>
+<span class="go">array([ 0.,  0.,  0., ...,  0.,  0.,  0.])</span>
+</pre></div>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.17.0: </span>Can now also add TopologyAttrs with a string of the name of the
+attribute to add (eg ‘charges’), can also supply initial values
+using values keyword.</p>
+</div>
 </dd></dl>
 
 <dl class="attribute">
