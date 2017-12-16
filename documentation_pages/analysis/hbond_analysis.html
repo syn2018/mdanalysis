@@ -119,7 +119,7 @@ database or dataframe for further processing.
 table itself is a <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.recarray.html#numpy.recarray" title="(in NumPy v1.13)"><code class="xref py py-class docutils literal"><span class="pre">numpy.recarray</span></code></a>.</p>
 </div>
 <div class="section" id="detection-of-hydrogen-bonds">
-<h2>4.3.1.2. Detection of hydrogen bonds<a class="headerlink" href="#detection-of-hydrogen-bonds" title="Permalink to this headline">¶</a></h2>
+<span id="id1"></span><h2>4.3.1.2. Detection of hydrogen bonds<a class="headerlink" href="#detection-of-hydrogen-bonds" title="Permalink to this headline">¶</a></h2>
 <p>Hydrogen bonds are recorded based on a geometric criterion:</p>
 <ol class="arabic simple">
 <li>The distance between acceptor and hydrogen is less than or equal to
@@ -149,8 +149,8 @@ default. Until release 0.7.6, only the heuristic search was implemented.</p>
 <a class="reference internal" href="#MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis._get_bonded_hydrogens_dist" title="MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis._get_bonded_hydrogens_dist"><code class="xref py py-meth docutils literal"><span class="pre">HydrogenBondAnalysis._get_bonded_hydrogens_dist()</span></code></a>) and heuristic
 search improved (<a class="reference internal" href="#MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis._get_bonded_hydrogens_list" title="MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis._get_bonded_hydrogens_list"><code class="xref py py-meth docutils literal"><span class="pre">HydrogenBondAnalysis._get_bonded_hydrogens_list()</span></code></a>)</p>
 </div>
-<span id="default-atom-names-for-hydrogen-bonding-analysis"></span><table border="1" class="docutils" id="id2">
-<caption><span class="caption-text">Default heavy atom names for CHARMM27 force field.</span><a class="headerlink" href="#id2" title="Permalink to this table">¶</a></caption>
+<span id="default-atom-names-for-hydrogen-bonding-analysis"></span><table border="1" class="docutils" id="id3">
+<caption><span class="caption-text">Default heavy atom names for CHARMM27 force field.</span><a class="headerlink" href="#id3" title="Permalink to this table">¶</a></caption>
 <colgroup>
 <col width="15%" />
 <col width="19%" />
@@ -239,7 +239,7 @@ search improved (<a class="reference internal" href="#MDAnalysis.analysis.hbonds
 <tr class="row-even"><td>MET</td>
 <td>&#160;</td>
 <td>SD</td>
-<td>see e.g. <a class="reference internal" href="#gregoret1991" id="id1">[Gregoret1991]</a></td>
+<td>see e.g. <a class="reference internal" href="#gregoret1991" id="id2">[Gregoret1991]</a></td>
 </tr>
 <tr class="row-odd"><td>SER</td>
 <td>OG</td>
@@ -263,8 +263,8 @@ search improved (<a class="reference internal" href="#MDAnalysis.analysis.hbonds
 </tr>
 </tbody>
 </table>
-<table border="1" class="docutils" id="id3">
-<caption><span class="caption-text">Heavy atom types for GLYCAM06 force field.</span><a class="headerlink" href="#id3" title="Permalink to this table">¶</a></caption>
+<table border="1" class="docutils" id="id4">
+<caption><span class="caption-text">Heavy atom types for GLYCAM06 force field.</span><a class="headerlink" href="#id4" title="Permalink to this table">¶</a></caption>
 <colgroup>
 <col width="28%" />
 <col width="28%" />
@@ -316,7 +316,7 @@ atom names to MDAnalysis.</p>
 <table class="docutils citation" frame="void" id="gregoret1991" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id1">[Gregoret1991]</a></td><td>L.M. Gregoret, S.D. Rader, R.J. Fletterick, and
+<tr><td class="label"><a class="fn-backref" href="#id2">[Gregoret1991]</a></td><td>L.M. Gregoret, S.D. Rader, R.J. Fletterick, and
 F.E. Cohen. Hydrogen bonds involving sulfur atoms in proteins. Proteins,
 9(2):99–107, 1991. <a class="reference external" href="http://dx.doi.org/10.1002/prot.340090204">10.1002/prot.340090204</a>.</td></tr>
 </tbody>
@@ -705,7 +705,7 @@ and added <em>kwargs</em> so that it can be used instead of
 
 <dl class="attribute">
 <dt id="MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.DEFAULT_ACCEPTORS">
-<code class="descname">DEFAULT_ACCEPTORS</code><em class="property"> = {'GLYCAM06': ('O', 'OW', 'SM', 'O2', 'OY', 'N', 'OH', 'NT', 'OS'), 'CHARMM27': ('ND1', 'O', 'OG', 'OW', 'NE2', 'SD', 'OD2', 'OH', 'OC2', 'OH2', 'OD1', 'OE2', 'OE1', 'SG', 'OG1', 'OC1'), 'other': ()}</em><a class="headerlink" href="#MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.DEFAULT_ACCEPTORS" title="Permalink to this definition">¶</a></dt>
+<code class="descname">DEFAULT_ACCEPTORS</code><em class="property"> = {'other': (), 'GLYCAM06': ('OW', 'SM', 'N', 'O2', 'O', 'OY', 'NT', 'OS', 'OH'), 'CHARMM27': ('OW', 'OC2', 'OD1', 'OG', 'SG', 'ND1', 'SD', 'OD2', 'OE1', 'OE2', 'NE2', 'O', 'OC1', 'OG1', 'OH', 'OH2')}</em><a class="headerlink" href="#MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.DEFAULT_ACCEPTORS" title="Permalink to this definition">¶</a></dt>
 <dd><p>default atom names that are treated as hydrogen <em>acceptors</em>
 (see <a class="reference internal" href="#default-atom-names-for-hydrogen-bonding-analysis"><span class="std std-ref">Default heavy atom names for CHARMM27 force field.</span></a>);
 use the keyword <cite>acceptors</cite> to add a list of additional acceptor names.</p>
@@ -713,7 +713,7 @@ use the keyword <cite>acceptors</cite> to add a list of additional acceptor name
 
 <dl class="attribute">
 <dt id="MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.DEFAULT_DONORS">
-<code class="descname">DEFAULT_DONORS</code><em class="property"> = {'GLYCAM06': ('N', 'OH', 'N3', 'NT', 'OW'), 'CHARMM27': ('ND1', 'OG', 'OW', 'NZ', 'OH', 'NE', 'NE1', 'OH2', 'NH1', 'NH2', 'OG1', 'SG', 'N', 'NE2', 'ND2'), 'other': ()}</em><a class="headerlink" href="#MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.DEFAULT_DONORS" title="Permalink to this definition">¶</a></dt>
+<code class="descname">DEFAULT_DONORS</code><em class="property"> = {'other': (), 'GLYCAM06': ('N', 'OW', 'NT', 'N3', 'OH'), 'CHARMM27': ('OW', 'OG', 'NH2', 'SG', 'NH1', 'ND2', 'N', 'ND1', 'NE', 'NE2', 'OG1', 'NE1', 'NZ', 'OH', 'OH2')}</em><a class="headerlink" href="#MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.DEFAULT_DONORS" title="Permalink to this definition">¶</a></dt>
 <dd><p>default heavy atom names whose hydrogens are treated as <em>donors</em>
 (see <a class="reference internal" href="#default-atom-names-for-hydrogen-bonding-analysis"><span class="std std-ref">Default heavy atom names for CHARMM27 force field.</span></a>);
 use the keyword <cite>donors</cite> to add a list of additional donor names.</p>
@@ -792,7 +792,7 @@ attribute <a class="reference internal" href="#MDAnalysis.analysis.hbonds.hbond_
 
 <dl class="attribute">
 <dt id="MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.r_cov">
-<code class="descname">r_cov</code><em class="property"> = defaultdict(&lt;function HydrogenBondAnalysis.&lt;lambda&gt;&gt;, {'N': 1.31, 'S': 1.55, 'O': 1.31, 'P': 1.58})</em><a class="headerlink" href="#MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.r_cov" title="Permalink to this definition">¶</a></dt>
+<code class="descname">r_cov</code><em class="property"> = defaultdict(&lt;function HydrogenBondAnalysis.&lt;lambda&gt;&gt;, {'N': 1.31, 'P': 1.58, 'O': 1.31, 'S': 1.55})</em><a class="headerlink" href="#MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.r_cov" title="Permalink to this definition">¶</a></dt>
 <dd><p>A <a class="reference external" href="https://docs.python.org/2/library/collections.html#collections.defaultdict" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">collections.defaultdict</span></code></a> of covalent radii of common donors
 (used in :meth`_get_bonded_hydrogens_list` to check if a hydrogen is
 sufficiently close to its donor heavy atom). Values are stored for
@@ -1021,6 +1021,7 @@ replaced in favor of zero-based indices.</p>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="hbond_autocorrel.html">4.3.2. Hydrogen bond autocorrelation — <code class="docutils literal"><span class="pre">MDAnalysis.analysis.hbonds.hbond_autocorrel</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="wbridge_analysis.html">4.3.3. Water Bridge analysis — <code class="docutils literal"><span class="pre">MDAnalysis.analysis.hbonds.WaterBridgeAnalysis</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#membranes-and-membrane-proteins">4.4. Membranes and membrane proteins</a></li>
@@ -1071,7 +1072,7 @@ replaced in favor of zero-based indices.</p>
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2005-2017, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Matthieu Chavent, Kathleen Clark, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Andrew William King, Max Linke, Jinju Lu, Micaela Matta, Robert McGibbon, Manuel Nuno Melo, Dominik 'Rathann' Mierzejewski, Fiona Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Vedant Rathore, Tyler Reddy, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Xiki Tempula, Matteo Tiberti, Isaac Virshup, Nestor Wendt, Zhuyi Xue, Juan Eiros Zamora, and Oliver Beckstein.
+      &copy;2005-2017, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Matthieu Chavent, Kathleen Clark, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Andrew William King, Max Linke, Jinju Lu, Micaela Matta, Robert McGibbon, Manuel Nuno Melo, Dominik 'Rathann' Mierzejewski, Fiona Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Vedant Rathore, Tyler Reddy, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Matteo Tiberti, Isaac Virshup, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, and Oliver Beckstein.
       
       |
       Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.5</a>
