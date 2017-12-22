@@ -107,7 +107,7 @@
 <span class="sd">   from MDAnalysisTests.datafiles import PSF, DCD</span>
 
 <span class="sd">   u = mda.Universe(PSF, DCD)</span>
-<span class="sd">   u.s4AKE  # selects all segments with segid 4AKE</span>
+<span class="sd">   u.select_atoms(&#39;segid 4AKE&#39;)  # selects all segments with segid 4AKE</span>
 
 <span class="sd">If only a single segment has that segid then a Segment object will</span>
 <span class="sd">be returned, otherwise a SegmentGroup will be returned.</span>
