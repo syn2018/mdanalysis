@@ -120,21 +120,21 @@
 
 <span class="sd">   &gt;&gt;&gt; ref = mda.Universe(PDB_small)</span>
 <span class="sd">   &gt;&gt;&gt; mobile = mda.Universe(PSF,DCD)</span>
-<span class="sd">   &gt;&gt;&gt; rmsd(mobile.atoms.CA.positions, ref.atoms.CA.positions)</span>
+<span class="sd">   &gt;&gt;&gt; rmsd(mobile.select_atoms(&#39;name CA&#39;).positions, ref.select_atoms(&#39;name CA&#39;).positions)</span>
 <span class="sd">   16.282308620224068</span>
 
 <span class="sd">Note that in this example translations have not been removed. In order</span>
 <span class="sd">to look at the pure rotation one needs to superimpose the centres of</span>
 <span class="sd">mass (or geometry) first:</span>
 
-<span class="sd">   &gt;&gt;&gt; rmsd(mobile.atoms.CA.positions, ref.atoms.CA.positions, center=True)</span>
+<span class="sd">   &gt;&gt;&gt; rmsd(mobile.select_atoms(&#39;name CA&#39;).positions, ref.select_atoms(&#39;name CA&#39;).positions, center=True)</span>
 <span class="sd">   12.639693690256898</span>
 
 <span class="sd">This has only done a translational superposition. If you want to also do a</span>
 <span class="sd">rotational superposition use the superposition keyword. This will calculate a</span>
 <span class="sd">minimized RMSD between the reference and mobile structure.</span>
 
-<span class="sd">   &gt;&gt;&gt; rmsd(mobile.atoms.CA.positions, ref.atoms.CA.positions,</span>
+<span class="sd">   &gt;&gt;&gt; rmsd(mobile.select_atoms(&#39;name CA&#39;).positions, ref.select_atoms(&#39;name CA&#39;).positions,</span>
 <span class="sd">   &gt;&gt;&gt;      superposition=True)</span>
 <span class="sd">   6.8093965864717951</span>
 
@@ -142,8 +142,8 @@
 <span class="sd">minimizing the CA-RMSD is obtained with the :func:`rotation_matrix`</span>
 <span class="sd">function ::</span>
 
-<span class="sd">   &gt;&gt;&gt; mobile0 = mobile.atoms.CA.positions - mobile.atoms.center_of_mass()</span>
-<span class="sd">   &gt;&gt;&gt; ref0 = ref.atoms.CA.positions - ref.atoms.center_of_mass()</span>
+<span class="sd">   &gt;&gt;&gt; mobile0 = mobile.select_atoms(&#39;name CA&#39;).positions - mobile.atoms.center_of_mass()</span>
+<span class="sd">   &gt;&gt;&gt; ref0 = ref.select_atoms(&#39;name CA&#39;).positions - ref.atoms.center_of_mass()</span>
 <span class="sd">   &gt;&gt;&gt; R, rmsd = align.rotation_matrix(mobile0, ref0)</span>
 <span class="sd">   &gt;&gt;&gt; print rmsd</span>
 <span class="sd">   6.8093965864717951</span>
@@ -154,9 +154,9 @@
 
 <span class="sd">Putting all this together one can superimpose all of *mobile* onto *ref*::</span>
 
-<span class="sd">   &gt;&gt;&gt; mobile.atoms.translate(-mobile.atoms.CA.center_of_mass())</span>
+<span class="sd">   &gt;&gt;&gt; mobile.atoms.translate(-mobile.select_atoms(&#39;name CA&#39;).center_of_mass())</span>
 <span class="sd">   &gt;&gt;&gt; mobile.atoms.rotate(R)</span>
-<span class="sd">   &gt;&gt;&gt; mobile.atoms.translate(ref.atoms.CA.center_of_mass())</span>
+<span class="sd">   &gt;&gt;&gt; mobile.atoms.translate(ref.select_atoms(&#39;name CA&#39;).center_of_mass())</span>
 <span class="sd">   &gt;&gt;&gt; mobile.atoms.write(&quot;mobile_on_ref.pdb&quot;)</span>
 
 
