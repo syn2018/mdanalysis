@@ -449,7 +449,7 @@
 
     <span class="k">return</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span>
         <span class="n">universes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span>
-        <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="nb">tuple</span><span class="p">([</span><span class="n">e</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">timeseries</span><span class="p">(</span><span class="nb">format</span><span class="o">=</span><span class="s1">&#39;fac&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">universes</span><span class="p">]),</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="nb">tuple</span><span class="p">([</span><span class="n">e</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">timeseries</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="s1">&#39;fac&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">universes</span><span class="p">]),</span>
                        <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
         <span class="nb">format</span><span class="o">=</span><span class="n">MemoryReader</span><span class="p">)</span></div>
 </pre></div>

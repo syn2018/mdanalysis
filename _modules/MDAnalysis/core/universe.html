@@ -549,7 +549,7 @@
             <span class="c1"># trajectory file formats</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">coordinates</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">timeseries</span><span class="p">(</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="n">stop</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="n">step</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;fac&#39;</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="n">stop</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="n">step</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;fac&#39;</span><span class="p">)</span>
             <span class="c1"># if the Timeseries extraction fails,</span>
             <span class="c1"># fall back to a slower approach</span>
             <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>

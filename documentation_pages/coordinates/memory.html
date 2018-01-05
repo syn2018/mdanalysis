@@ -1088,7 +1088,7 @@ time = <code class="xref py py-attr docutils literal"><span class="pre">Timestep
 
 <dl class="method">
 <dt id="MDAnalysis.coordinates.memory.MemoryReader.timeseries">
-<code class="descname">timeseries</code><span class="sig-paren">(</span><em>asel=None</em>, <em>start=0</em>, <em>stop=-1</em>, <em>step=1</em>, <em>format='afc'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/memory.html#MemoryReader.timeseries"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.memory.MemoryReader.timeseries" title="Permalink to this definition">¶</a></dt>
+<code class="descname">timeseries</code><span class="sig-paren">(</span><em>asel=None</em>, <em>start=0</em>, <em>stop=-1</em>, <em>step=1</em>, <em>order='afc'</em>, <em>format=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/memory.html#MemoryReader.timeseries"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.memory.MemoryReader.timeseries" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a subset of coordinate data for an AtomGroup in desired
 column order/format. If no selection is given, it will return a view of
 the underlying array, while a copy is returned otherwise.</p>
@@ -1104,11 +1104,12 @@ data is returned whenever <cite>asel</cite> is different from <code class="docut
 <li><strong>start</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – </li>
 <li><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – </li>
 <li><strong>step</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – range of trajectory to access, <cite>start</cite> and <cite>stop</cite> are <em>inclusive</em></li>
-<li><strong>format</strong> (<em>{&quot;afc&quot;</em><em>, </em><em>&quot;acf&quot;</em><em>, </em><em>&quot;caf&quot;</em><em>, </em><em>&quot;fac&quot;</em><em>, </em><em>&quot;fca&quot;</em><em>, </em><em>&quot;cfa&quot;}</em><em> (</em><em>optional</em><em>)</em>) – the order/shape of the return data array, corresponding
+<li><strong>order</strong> (<em>{&quot;afc&quot;</em><em>, </em><em>&quot;acf&quot;</em><em>, </em><em>&quot;caf&quot;</em><em>, </em><em>&quot;fac&quot;</em><em>, </em><em>&quot;fca&quot;</em><em>, </em><em>&quot;cfa&quot;}</em><em> (</em><em>optional</em><em>)</em>) – the order/shape of the return data array, corresponding
 to (a)tom, (f)rame, (c)oordinates all six combinations
 of ‘a’, ‘f’, ‘c’ are allowed ie “fac” - return array
 where the shape is (frame, number of atoms,
 coordinates).</li>
+<li><strong>format</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – deprecated, equivalent to <cite>order</cite></li>
 </ul>
 </td>
 </tr>
@@ -1120,6 +1121,9 @@ coordinates).</li>
 <code class="xref py py-class docutils literal"><span class="pre">MDAnalysis.coordinates.DCD.timeseries</span></code> interface. It is
 identical to the <cite>order</cite> parameter for <a class="reference internal" href="#MDAnalysis.coordinates.memory.MemoryReader" title="MDAnalysis.coordinates.memory.MemoryReader"><code class="xref py py-class docutils literal"><span class="pre">MemoryReader</span></code></a>. In a
 future version, <cite>format</cite> will be renamed to <cite>order</cite>.</p>
+</div>
+<div class="deprecated">
+<p><span class="versionmodified">Deprecated since version 0.17.0: </span><cite>format</cite> has been deprecated in favor of the standard keyword <cite>order</cite>.</p>
 </div>
 </dd></dl>
 

@@ -251,7 +251,7 @@
             <span class="n">args</span> <span class="o">+=</span> <span class="p">[(</span><span class="n">d</span><span class="p">,)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">distance_matrix</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">merged_ensemble</span> <span class="ow">in</span> <span class="n">merged_ensembles</span><span class="p">:</span>
-                <span class="n">coordinates</span> <span class="o">=</span> <span class="n">merged_ensemble</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">timeseries</span><span class="p">(</span><span class="nb">format</span><span class="o">=</span><span class="s2">&quot;fac&quot;</span><span class="p">)</span>
+                <span class="n">coordinates</span> <span class="o">=</span> <span class="n">merged_ensemble</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">timeseries</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="s2">&quot;fac&quot;</span><span class="p">)</span>
 
                 <span class="c1"># Flatten coordinate matrix into n_frame x n_coordinates</span>
                 <span class="n">coordinates</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">coordinates</span><span class="p">,</span>

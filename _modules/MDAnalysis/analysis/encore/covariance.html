@@ -251,7 +251,7 @@
     <span class="c1"># Extract coordinates from ensemble</span>
     <span class="n">coordinates</span> <span class="o">=</span> <span class="n">ensemble</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">timeseries</span><span class="p">(</span>
         <span class="n">ensemble</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">selection</span><span class="p">),</span>
-        <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;fac&#39;</span><span class="p">)</span>
+        <span class="n">order</span><span class="o">=</span><span class="s1">&#39;fac&#39;</span><span class="p">)</span>
 
     <span class="c1"># Flatten coordinate matrix into n_frame x n_coordinates</span>
     <span class="n">coordinates</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">coordinates</span><span class="p">,</span> <span class="p">(</span><span class="n">coordinates</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span>

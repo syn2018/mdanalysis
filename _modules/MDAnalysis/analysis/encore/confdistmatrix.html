@@ -143,7 +143,7 @@
 
     <span class="c1"># framesn: number of frames</span>
     <span class="n">framesn</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ensemble</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">timeseries</span><span class="p">(</span>
-        <span class="n">ensemble</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">selection</span><span class="p">),</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;fac&#39;</span><span class="p">))</span>
+        <span class="n">ensemble</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">selection</span><span class="p">),</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;fac&#39;</span><span class="p">))</span>
 
     <span class="c1"># Prepare metadata recarray</span>
     <span class="k">if</span> <span class="n">metadata</span><span class="p">:</span>
@@ -168,7 +168,7 @@
 
     <span class="n">rmsd_coordinates</span> <span class="o">=</span> <span class="n">ensemble</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">timeseries</span><span class="p">(</span>
             <span class="n">ensemble</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">selection</span><span class="p">),</span>
-            <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;fac&#39;</span><span class="p">)</span>
+            <span class="n">order</span><span class="o">=</span><span class="s1">&#39;fac&#39;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">pairwise_align</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">superimposition_selection</span><span class="p">:</span>
@@ -178,7 +178,7 @@
 
         <span class="n">fitting_coordinates</span> <span class="o">=</span> <span class="n">ensemble</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">timeseries</span><span class="p">(</span>
             <span class="n">ensemble</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">subset_selection</span><span class="p">),</span>
-            <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;fac&#39;</span><span class="p">)</span>
+            <span class="n">order</span><span class="o">=</span><span class="s1">&#39;fac&#39;</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">fitting_coordinates</span> <span class="o">=</span> <span class="kc">None</span>
 
@@ -359,7 +359,7 @@
             <span class="n">TriangularMatrix</span><span class="p">(</span>
                 <span class="n">size</span><span class="o">=</span><span class="n">ensemble</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">timeseries</span><span class="p">(</span>
                     <span class="n">ensemble</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">selection</span><span class="p">),</span>
-                    <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;fac&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                    <span class="n">order</span><span class="o">=</span><span class="s1">&#39;fac&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
                 <span class="n">loadfile</span><span class="o">=</span><span class="n">load_matrix</span><span class="p">)</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;        Done!&quot;</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">confdistmatrix</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">names</span><span class="p">:</span>
@@ -370,7 +370,7 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="n">confdistmatrix</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> \
                 <span class="n">ensemble</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">timeseries</span><span class="p">(</span>
                     <span class="n">ensemble</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">selection</span><span class="p">),</span>
-                    <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;fac&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+                    <span class="n">order</span><span class="o">=</span><span class="s1">&#39;fac&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
                 <span class="s2">&quot;ERROR: The size of the loaded matrix and of the ensemble&quot;</span>
                 <span class="s2">&quot; do not match&quot;</span><span class="p">)</span>
