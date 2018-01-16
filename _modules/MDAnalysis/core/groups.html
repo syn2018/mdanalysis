@@ -2035,7 +2035,7 @@
 <span class="sd">        .. versionadded:: 0.16.0</span>
 <span class="sd">           Updating selections now possible by setting the ``updating`` argument.</span>
 <span class="sd">        .. versionadded:: 0.17.0</span>
-<span class="sd">           Added *moltype* selection.</span>
+<span class="sd">           Added *moltype* and *molnum* selections.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">updating</span> <span class="o">=</span> <span class="n">selgroups</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;updating&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
@@ -2055,13 +2055,16 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        level : {&#39;atom&#39;, &#39;residue&#39;, &#39;segment&#39;}</span>
+<span class="sd">        level : {&#39;atom&#39;, &#39;residue&#39;, &#39;molecule&#39;, &#39;segment&#39;}</span>
 
 
 <span class="sd">        .. versionadded:: 0.9.0</span>
+<span class="sd">        .. versionchanged:: 0.17.0</span>
+<span class="sd">           Added the &#39;molecule&#39; level.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">accessors</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;segment&#39;</span><span class="p">:</span> <span class="s1">&#39;segindices&#39;</span><span class="p">,</span>
-                     <span class="s1">&#39;residue&#39;</span><span class="p">:</span> <span class="s1">&#39;resindices&#39;</span><span class="p">}</span>
+                     <span class="s1">&#39;residue&#39;</span><span class="p">:</span> <span class="s1">&#39;resindices&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;molecule&#39;</span><span class="p">:</span> <span class="s1">&#39;molnums&#39;</span><span class="p">}</span>
 
         <span class="k">if</span> <span class="n">level</span> <span class="o">==</span> <span class="s2">&quot;atom&quot;</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">atoms</span><span class="p">[[</span><span class="n">a</span><span class="o">.</span><span class="n">ix</span><span class="p">]]</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">]</span>
@@ -2069,6 +2072,10 @@
         <span class="c1"># higher level groupings</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">levelindices</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">accessors</span><span class="p">[</span><span class="n">level</span><span class="p">])</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s1">&#39;This universe does not have </span><span class="si">{}</span><span class="s1"> &#39;</span>
+                             <span class="s1">&#39;information. Maybe it is not provided in the &#39;</span>
+                             <span class="s1">&#39;topology format in use.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">level</span><span class="p">))</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;level = &#39;</span><span class="si">{0}</span><span class="s2">&#39; not supported, &quot;</span>
                              <span class="s2">&quot;must be one of </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">level</span><span class="p">,</span>

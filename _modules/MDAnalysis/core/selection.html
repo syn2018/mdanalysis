@@ -812,6 +812,8 @@
 
 
 <span class="k">class</span> <span class="nc">RangeSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
+    <span class="n">value_offset</span><span class="o">=</span><span class="mi">0</span>
+
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">tokens</span><span class="p">):</span>
         <span class="n">values</span> <span class="o">=</span> <span class="n">grab_not_keywords</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">values</span><span class="p">:</span>
@@ -838,13 +840,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">lowers</span> <span class="o">=</span> <span class="n">lowers</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">uppers</span> <span class="o">=</span> <span class="n">uppers</span>
 
-
-<span class="k">class</span> <span class="nc">ResnumSelection</span><span class="p">(</span><span class="n">RangeSelection</span><span class="p">):</span>
-    <span class="n">token</span> <span class="o">=</span> <span class="s1">&#39;resnum&#39;</span>
-
     <span class="k">def</span> <span class="nf">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
         <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">group</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">bool</span><span class="p">)</span>
-        <span class="n">vals</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">resnums</span>
+        <span class="n">vals</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">field</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">value_offset</span>
 
         <span class="k">for</span> <span class="n">upper</span><span class="p">,</span> <span class="n">lower</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">uppers</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">lowers</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">upper</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -855,25 +853,22 @@
 
             <span class="n">mask</span> <span class="o">|=</span> <span class="n">thismask</span>
         <span class="k">return</span> <span class="n">group</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span>
+
+
+<span class="k">class</span> <span class="nc">ResnumSelection</span><span class="p">(</span><span class="n">RangeSelection</span><span class="p">):</span>
+    <span class="n">token</span> <span class="o">=</span> <span class="s1">&#39;resnum&#39;</span>
+    <span class="n">field</span> <span class="o">=</span> <span class="s1">&#39;resnums&#39;</span>
 
 
 <span class="k">class</span> <span class="nc">ByNumSelection</span><span class="p">(</span><span class="n">RangeSelection</span><span class="p">):</span>
     <span class="n">token</span> <span class="o">=</span> <span class="s1">&#39;bynum&#39;</span>
+    <span class="n">field</span> <span class="o">=</span> <span class="s1">&#39;indices&#39;</span>
+    <span class="n">value_offset</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># queries are in 1 based indices</span>
 
-    <span class="k">def</span> <span class="nf">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
-        <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">group</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">bool</span><span class="p">)</span>
-        <span class="n">vals</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">indices</span> <span class="o">+</span> <span class="mi">1</span>  <span class="c1"># queries are in 1 based indices</span>
 
-        <span class="k">for</span> <span class="n">upper</span><span class="p">,</span> <span class="n">lower</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">uppers</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">lowers</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">upper</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">thismask</span> <span class="o">=</span> <span class="n">vals</span> <span class="o">&gt;=</span> <span class="n">lower</span>
-                <span class="n">thismask</span> <span class="o">&amp;=</span> <span class="n">vals</span> <span class="o">&lt;=</span> <span class="n">upper</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">thismask</span> <span class="o">=</span> <span class="n">vals</span> <span class="o">==</span> <span class="n">lower</span>
-
-            <span class="n">mask</span> <span class="o">|=</span> <span class="n">thismask</span>
-        <span class="k">return</span> <span class="n">group</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span>
-
+<span class="k">class</span> <span class="nc">MolidSelection</span><span class="p">(</span><span class="n">RangeSelection</span><span class="p">):</span>
+    <span class="n">token</span> <span class="o">=</span> <span class="s1">&#39;molnum&#39;</span>
+    <span class="n">field</span> <span class="o">=</span> <span class="s1">&#39;molnums&#39;</span>
 
 
 <div class="viewcode-block" id="ProteinSelection"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.ProteinSelection">[docs]</a><span class="k">class</span> <span class="nc">ProteinSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
