@@ -259,13 +259,13 @@ standard conditions</p>
 <h2>4.8.1.3. Supporting classes and functions<a class="headerlink" href="#supporting-classes-and-functions" title="Permalink to this headline">¶</a></h2>
 <p>The main output of the density creation functions is a
 <a class="reference internal" href="#MDAnalysis.analysis.density.Density" title="MDAnalysis.analysis.density.Density"><code class="xref py py-class docutils literal"><span class="pre">Density</span></code></a> instance, which is derived from a
-<a class="reference external" href="https://griddataformats.readthedocs.io/en/stable/gridData/core.html#gridData.core.Grid" title="(in gridDataFormats v0.3)"><code class="xref py py-class docutils literal"><span class="pre">gridData.core.Grid</span></code></a>. A <a class="reference internal" href="#MDAnalysis.analysis.density.Density" title="MDAnalysis.analysis.density.Density"><code class="xref py py-class docutils literal"><span class="pre">Density</span></code></a> is essentially, a 3D
+<a class="reference external" href="https://griddataformats.readthedocs.io/en/stable/gridData/core.html#gridData.core.Grid" title="(in GridDataFormats v0.4)"><code class="xref py py-class docutils literal"><span class="pre">gridData.core.Grid</span></code></a>. A <a class="reference internal" href="#MDAnalysis.analysis.density.Density" title="MDAnalysis.analysis.density.Density"><code class="xref py py-class docutils literal"><span class="pre">Density</span></code></a> is essentially, a 3D
 array with origin and lengths together with associated metadata (which
 can be used in downstream processing).</p>
 <dl class="class">
 <dt id="MDAnalysis.analysis.density.Density">
 <em class="property">class </em><code class="descclassname">MDAnalysis.analysis.density.</code><code class="descname">Density</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/density.html#Density"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.density.Density" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://griddataformats.readthedocs.io/en/stable/gridData/core.html#gridData.core.Grid" title="(in gridDataFormats v0.3)"><code class="xref py py-class docutils literal"><span class="pre">gridData.core.Grid</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://griddataformats.readthedocs.io/en/stable/gridData/core.html#gridData.core.Grid" title="(in GridDataFormats v0.4)"><code class="xref py py-class docutils literal"><span class="pre">gridData.core.Grid</span></code></a></p>
 <p>Class representing a density on a regular cartesian grid.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -362,7 +362,7 @@ that the data are in fact a density.</p>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
 <dl class="last docutils">
-<dt><a class="reference external" href="https://griddataformats.readthedocs.io/en/stable/gridData/core.html#gridData.core.Grid" title="(in gridDataFormats v0.3)"><code class="xref py py-class docutils literal"><span class="pre">gridData.core.Grid</span></code></a></dt>
+<dt><a class="reference external" href="https://griddataformats.readthedocs.io/en/stable/gridData/core.html#gridData.core.Grid" title="(in GridDataFormats v0.4)"><code class="xref py py-class docutils literal"><span class="pre">gridData.core.Grid</span></code></a></dt>
 <dd>the base class of <a class="reference internal" href="#MDAnalysis.analysis.density.Density" title="MDAnalysis.analysis.density.Density"><code class="xref py py-class docutils literal"><span class="pre">Density</span></code></a>.</dd>
 </dl>
 </div>
@@ -524,7 +524,7 @@ histogram and a length unit and use <a class="reference internal" href="#MDAnaly
 
 <dl class="method">
 <dt id="MDAnalysis.analysis.density.Density.export">
-<code class="descname">export</code><span class="sig-paren">(</span><em>filename</em>, <em>file_format=None</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.density.Density.export" title="Permalink to this definition">¶</a></dt>
+<code class="descname">export</code><span class="sig-paren">(</span><em>filename</em>, <em>file_format=None</em>, <em>type=None</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.density.Density.export" title="Permalink to this definition">¶</a></dt>
 <dd><p>export density to file using the given format.</p>
 <p>The format can also be deduced from the suffix of the filename
 though the <em>format</em> keyword takes precedence.</p>
@@ -538,6 +538,27 @@ visualization.</p>
 <dd>pickle (use :meth:<code class="docutils literal"><span class="pre">Grid.load`</span> <span class="pre">to</span> <span class="pre">restore);</span> <span class="pre">:meth:`Grid.save`</span>
 <span class="pre">is</span> <span class="pre">simpler</span> <span class="pre">than</span> <span class="pre">``export(format='python')</span></code>.</dd>
 </dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – name of the output file</li>
+<li><strong>file_format</strong> (<em>{'dx'</em><em>, </em><em>'pickle'</em><em>, </em><em>None}</em><em> (</em><em>optional</em><em>)</em>) – output file format, the default is “dx”</li>
+<li><strong>type</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – <p>for DX, set the output DX array type, e.g., “double” or
+“float”; note that PyMOL only understands “double” (see
+issue <a class="reference external" href="https://github.com/MDAnalysis/GridDataFormats/issues/35">#35</a>). By default (<code class="docutils literal"><span class="pre">None</span></code>), the DX type is
+determined from the numpy dtype of the array of the grid
+(and this will typically result in “double”).</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.4.0.</span></p>
+</div>
+</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
