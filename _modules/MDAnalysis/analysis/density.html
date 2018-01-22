@@ -70,8 +70,7 @@
 <span class="c1"># Copyright (c) 2007-2011 Oliver Beckstein &lt;orbeckst@gmail.com&gt;</span>
 <span class="c1"># (based on code from Hop --- a framework to analyze solvation dynamics from MD simulations)</span>
 
-<span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">Generating densities from trajectories --- :mod:`MDAnalysis.analysis.density`</span>
+<span class="sa">r</span><span class="sd">&quot;&quot;&quot;Generating densities from trajectories --- :mod:`MDAnalysis.analysis.density`</span>
 <span class="sd">=============================================================================</span>
 
 <span class="sd">:Author: Oliver Beckstein</span>
@@ -99,15 +98,15 @@
 <span class="sd">  u = Universe(TPR, XTC)</span>
 <span class="sd">  D = density_from_Universe(u, delta=1.0, atomselection=&quot;name OW&quot;)</span>
 <span class="sd">  D.convert_density(&#39;TIP4P&#39;)</span>
-<span class="sd">  D.export(&quot;water.dx&quot;)</span>
+<span class="sd">  D.export(&quot;water.dx&quot;, type=&quot;double&quot;)</span>
 
 <span class="sd">The positions of all water oxygens are histogrammed on a grid with spacing</span>
-<span class="sd">*delta* = 1 Å. Initially the density is measured in :math:`\text{Å}^{-3}`. With the</span>
-<span class="sd">:meth:`Density.convert_density` method, the units of measurement are</span>
+<span class="sd">*delta* = 1 Å. Initially the density is measured in :math:`\text{Å}^{-3}`. With</span>
+<span class="sd">the :meth:`Density.convert_density` method, the units of measurement are</span>
 <span class="sd">changed. In the example we are now measuring the density relative to the</span>
 <span class="sd">literature value of the TIP4P water model at ambient conditions (see the values</span>
-<span class="sd">in :data:`MDAnalysis.units.water` for details). Finally, the density is</span>
-<span class="sd">writte as an OpenDX_ compatible file that can be read in VMD_ or PyMOL_.</span>
+<span class="sd">in :data:`MDAnalysis.units.water` for details). Finally, the density is written</span>
+<span class="sd">as an OpenDX_ compatible file that can be read in VMD_, Chimera_, or PyMOL_.</span>
 
 <span class="sd">See :class:`Density` for details. In particular, the density is stored</span>
 <span class="sd">as a NumPy array in :attr:`Density.grid`, which can be processed in</span>
@@ -150,8 +149,8 @@
 
 <span class="sd">.. _OpenDX: http://www.opendx.org/</span>
 <span class="sd">.. _VMD:   http://www.ks.uiuc.edu/Research/vmd/</span>
+<span class="sd">.. _Chimera: https://www.cgl.ucsf.edu/chimera/</span>
 <span class="sd">.. _PyMOL: http://www.pymol.org/</span>
-<span class="sd">.. _GridDataFormats: https://github.com/MDAnalysis/GridDataFormats</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
 
@@ -166,30 +165,7 @@
 <span class="kn">import</span> <span class="nn">errno</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
 
-<span class="k">try</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">gridData</span> <span class="k">import</span> <span class="n">Grid</span>
-<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-    <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span>
-        <span class="sd">&quot;&quot;&quot;ImportError: The GridDataFormats package can not be found!</span>
-
-<span class="sd">        The &#39;gridData&#39; module from GridDataFormats could not be</span>
-<span class="sd">        imported. Please install it first.  You can try installing</span>
-<span class="sd">        directly from the internet:</span>
-
-<span class="sd">          pip install GridDataFormats</span>
-
-<span class="sd">        or</span>
-
-<span class="sd">          conda config --add channels conda-forge</span>
-<span class="sd">          conda install griddataformats</span>
-
-<span class="sd">        Alternatively, download the package from</span>
-
-<span class="sd">          http://pypi.python.org/pypi/GridDataFormats/</span>
-
-<span class="sd">        and install in the usual manner.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-    <span class="p">)</span>
+<span class="kn">from</span> <span class="nn">gridData</span> <span class="k">import</span> <span class="n">Grid</span>
 
 <span class="kn">import</span> <span class="nn">MDAnalysis</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis.core</span> <span class="k">import</span> <span class="n">groups</span>
@@ -268,9 +244,14 @@
 <span class="sd">    The attribute :attr:`Density.metadata` holds a user-defined dictionary that</span>
 <span class="sd">    can be used to annotate the data. It is also saved with :meth:`Density.save`.</span>
 
-<span class="sd">    The :meth:`Density.export` method always exports a 3D object</span>
-<span class="sd">    (written in such a way to be readable in VMD_ and PyMOL_), the</span>
-<span class="sd">    rest should work for an array of any dimension.</span>
+<span class="sd">    The :meth:`Density.export` method always exports a 3D object (written in</span>
+<span class="sd">    such a way to be readable in VMD_, Chimera_, and PyMOL_), the rest should</span>
+<span class="sd">    work for an array of any dimension. Note that PyMOL_ only understands DX</span>
+<span class="sd">    files with the DX data type &quot;double&quot; in the &quot;array&quot; object (see `known</span>
+<span class="sd">    issues when writing OpenDX files`_ and issue</span>
+<span class="sd">    `MDAnalysis/GridDataFormats#35`_ for details). Using the keyword</span>
+<span class="sd">    ``type=&quot;double&quot;`` for the method :meth:`Density.export`, the user can</span>
+<span class="sd">    ensure that the DX file is written in a format suitable for PyMOL_.</span>
 
 <span class="sd">    If the input histogram consists of counts per cell then the</span>
 <span class="sd">    :meth:`Density.make_density` method converts the grid to a physical density. For</span>
@@ -283,6 +264,11 @@
 <span class="sd">    data represent counts or a density. As a special convenience, if data are</span>
 <span class="sd">    read from a file and the user has not set ``isDensity`` then it is assumed</span>
 <span class="sd">    that the data are in fact a density.</span>
+
+<span class="sd">    .. _`MDAnalysis/GridDataFormats#35`:</span>
+<span class="sd">       https://github.com/MDAnalysis/GridDataFormats/issues/35</span>
+<span class="sd">    .. _`known issues when writing OpenDX files`:</span>
+<span class="sd">       https://www.mdanalysis.org/GridDataFormats/gridData/formats/OpenDX.html#known-issues-for-writing-opendx-files</span>
 
 <span class="sd">    See Also</span>
 <span class="sd">    --------</span>
