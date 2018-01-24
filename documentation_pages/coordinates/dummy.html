@@ -5,7 +5,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>6.5. DESRES file format — MDAnalysis.coordinates.DMS &#8212; MDAnalysis 0.17.0-dev documentation</title>
+    <title>6.23. Dummy coordinate reader &#8212; MDAnalysis 0.17.0-dev documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
@@ -28,8 +28,8 @@
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="6.6. GAMESS trajectory reader — MDAnalysis.coordinates.GMS" href="GMS.html" />
-    <link rel="prev" title="6.4. DL_Poly format reader MDAnalysis.coordinates.DLPoly" href="DLPoly.html" />
+    <link rel="next" title="6.24. Base classes — MDAnalysis.coordinates.base" href="base.html" />
+    <link rel="prev" title="6.22. Null output — MDAnalysis.coordinates.null" href="null.html" />
    
   <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
   
@@ -45,19 +45,29 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <span class="target" id="module-MDAnalysis.coordinates.DMS"></span><div class="section" id="desres-file-format-mdanalysis-coordinates-dms">
-<h1>6.5. DESRES file format — <a class="reference internal" href="#module-MDAnalysis.coordinates.DMS" title="MDAnalysis.coordinates.DMS"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.DMS</span></code></a><a class="headerlink" href="#desres-file-format-mdanalysis-coordinates-dms" title="Permalink to this headline">¶</a></h1>
-<p>Classes to read <a class="reference external" href="http://www.deshawresearch.com">DESRES</a> Molecular Structure file format (<a class="reference external" href="http://www.deshawresearch.com/Desmond_Users_Guide-0.7.pdf">DMS</a>)
-coordinate files (as used by the <a class="reference external" href="http://www.deshawresearch.com/resources_desmond.html">Desmond</a> MD package).</p>
+  <span class="target" id="module-MDAnalysis.coordinates.dummy"></span><div class="section" id="dummy-coordinate-reader">
+<h1>6.23. Dummy coordinate reader<a class="headerlink" href="#dummy-coordinate-reader" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="classes">
+<h2>6.23.1. Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
-<dt id="MDAnalysis.coordinates.DMS.DMSReader">
-<em class="property">class </em><code class="descclassname">MDAnalysis.coordinates.DMS.</code><code class="descname">DMSReader</code><span class="sig-paren">(</span><em>filename</em>, <em>convert_units=None</em>, <em>n_atoms=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/DMS.html#DMSReader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.DMS.DMSReader" title="Permalink to this definition">¶</a></dt>
-<dd><p>Reads both coordinates and velocities.</p>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.11.0: </span>Frames now 0-based instead of 1-based</p>
+<dt id="MDAnalysis.coordinates.dummy.DummyReader">
+<em class="property">class </em><code class="descclassname">MDAnalysis.coordinates.dummy.</code><code class="descname">DummyReader</code><span class="sig-paren">(</span><em>n_atoms=None</em>, <em>velocities=False</em>, <em>forces=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/dummy.html#DummyReader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.dummy.DummyReader" title="Permalink to this definition">¶</a></dt>
+<dd><p>Basic Reader which does not read from any file</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.17.0.</span></p>
 </div>
 </dd></dl>
 
+<dl class="class">
+<dt>
+<em class="property">class </em><code class="descclassname">MDAnalysis.coordinates.dummy.</code><code class="descname">DummyReader</code><span class="sig-paren">(</span><em>n_atoms=None</em>, <em>velocities=False</em>, <em>forces=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/dummy.html#DummyReader"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Basic Reader which does not read from any file</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.17.0.</span></p>
+</div>
+</dd></dl>
+
+</div>
 </div>
 
 
@@ -99,7 +109,7 @@ coordinate files (as used by the <a class="reference external" href="http://www.
 <li class="toctree-l2"><a class="reference internal" href="CRD.html">6.2. CRD structure files in MDAnalysis — <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.CRD</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="DCD.html">6.3. DCD trajectory I/O  — <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.DCD</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="DLPoly.html">6.4. DL_Poly format reader <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.DLPoly</span></code></a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">6.5. DESRES file format — <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.DMS</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="DMS.html">6.5. DESRES file format — <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.DMS</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="GMS.html">6.6. GAMESS trajectory reader — <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.GMS</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="GRO.html">6.7. GRO file format — <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.GRO</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="INPCRD.html">6.8. INPCRD structure files in MDAnalysis — <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.INPCRD</span></code></a></li>
@@ -117,7 +127,10 @@ coordinate files (as used by the <a class="reference external" href="http://www.
 <li class="toctree-l2"><a class="reference internal" href="TRZ.html">6.20. TRZ trajectory I/O  — <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.TRZ</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="memory.html">6.21. Reading trajectories from memory — <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.memory</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="null.html">6.22. Null output — <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.null</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="dummy.html">6.23. Dummy coordinate reader</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">6.23. Dummy coordinate reader</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#classes">6.23.1. Classes</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="base.html">6.24. Base classes — <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.base</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="core.html">6.25. Common functions for coordinate reading — <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.core</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="chain.html">6.26. ChainReader — <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.chain</span></code></a></li>
@@ -140,8 +153,8 @@ coordinate files (as used by the <a class="reference external" href="http://www.
 <ul>
   <li><a href="../../index.html">Documentation overview</a><ul>
   <li><a href="../coordinates_modules.html">6. Coordinates modules</a><ul>
-      <li>Previous: <a href="DLPoly.html" title="previous chapter">6.4. DL_Poly format reader <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.DLPoly</span></code></a></li>
-      <li>Next: <a href="GMS.html" title="next chapter">6.6. GAMESS trajectory reader — <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.GMS</span></code></a></li>
+      <li>Previous: <a href="null.html" title="previous chapter">6.22. Null output — <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.null</span></code></a></li>
+      <li>Next: <a href="base.html" title="next chapter">6.24. Base classes — <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.base</span></code></a></li>
   </ul></li>
   </ul></li>
 </ul>
@@ -168,7 +181,7 @@ coordinate files (as used by the <a class="reference external" href="http://www.
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
       
       |
-      <a href="../../_sources/documentation_pages/coordinates/DMS.rst.txt"
+      <a href="../../_sources/documentation_pages/coordinates/dummy.rst.txt"
           rel="nofollow">Page source</a>
     </div>
 

@@ -28,7 +28,7 @@
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="5.9. MMTF Topology Parser" href="MMTFParser.html" />
+    <link rel="next" title="5.9. Minimal topology parser" href="MinimalParser.html" />
     <link rel="prev" title="5.7. HOOMD XML topology parser" href="HoomdXMLParser.html" />
    
   <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
@@ -52,7 +52,7 @@
 <h2>5.8.1. Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="MDAnalysis.topology.LAMMPSParser.DATAParser">
-<em class="property">class </em><code class="descclassname">MDAnalysis.topology.LAMMPSParser.</code><code class="descname">DATAParser</code><span class="sig-paren">(</span><em>filename</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/LAMMPSParser.html#DATAParser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.LAMMPSParser.DATAParser" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">MDAnalysis.topology.LAMMPSParser.</code><code class="descname">DATAParser</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/LAMMPSParser.html#DATAParser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.LAMMPSParser.DATAParser" title="Permalink to this definition">¶</a></dt>
 <dd><p>Parse a LAMMPS DATA file for topology and coordinates.</p>
 <p>Note that <a class="reference external" href="http://lammps.sandia.gov/">LAMMPS</a> DATA files can be used standalone.</p>
 <p>Both topology and coordinate parsing functionality is kept in this
@@ -321,7 +321,7 @@ is avoided.</p>
 
 <dl class="method">
 <dt id="MDAnalysis.topology.LAMMPSParser.DATAParser.parse">
-<code class="descname">parse</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/LAMMPSParser.html#DATAParser.parse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.LAMMPSParser.DATAParser.parse" title="Permalink to this definition">¶</a></dt>
+<code class="descname">parse</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/LAMMPSParser.html#DATAParser.parse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.LAMMPSParser.DATAParser.parse" title="Permalink to this definition">¶</a></dt>
 <dd><p>Parses a <a class="reference external" href="http://lammps.sandia.gov/">LAMMPS</a> DATA file.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -444,22 +444,23 @@ from a data file “lammps.data” you can use:</p>
 <li class="toctree-l3"><a class="reference internal" href="#deprecated-classes">5.8.2. Deprecated classes</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="MMTFParser.html">5.9. MMTF Topology Parser</a></li>
-<li class="toctree-l2"><a class="reference internal" href="MOL2Parser.html">5.10. MOL2 file format — <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.MOL2</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="PDBParser.html">5.11. PDB Topology Parser</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ExtendedPDBParser.html">5.12. Extended PDB topology parser</a></li>
-<li class="toctree-l2"><a class="reference internal" href="PDBQTParser.html">5.13. PDBQT topology parser</a></li>
-<li class="toctree-l2"><a class="reference internal" href="PQRParser.html">5.14. PQR topology parser</a></li>
-<li class="toctree-l2"><a class="reference internal" href="PSFParser.html">5.15. PSF topology parser</a></li>
-<li class="toctree-l2"><a class="reference internal" href="TOPParser.html">5.16. AMBER PRMTOP topology parser</a></li>
-<li class="toctree-l2"><a class="reference internal" href="TPRParser.html">5.17. Gromacs portable run input TPR format parser</a></li>
-<li class="toctree-l2"><a class="reference internal" href="TXYZParser.html">5.18. TXYZ topology parser</a></li>
-<li class="toctree-l2"><a class="reference internal" href="XYZParser.html">5.19. XYZ Topology Parser</a></li>
-<li class="toctree-l2"><a class="reference internal" href="base.html">5.20. Base topology reader classes — <code class="docutils literal"><span class="pre">MDAnalysis.topology.base</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="core.html">5.21. Common functions for topology building — <code class="docutils literal"><span class="pre">MDAnalysis.topology.core</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="guessers.html">5.22. Guessing unknown Topology information — <code class="docutils literal"><span class="pre">MDAnalysis.topology.guessers</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="tables.html">5.23. MDAnalysis topology tables</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tpr_util.html">5.24. Utility functions for the TPR topology parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="MinimalParser.html">5.9. Minimal topology parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="MMTFParser.html">5.10. MMTF Topology Parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="MOL2Parser.html">5.11. MOL2 file format — <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.MOL2</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="PDBParser.html">5.12. PDB Topology Parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ExtendedPDBParser.html">5.13. Extended PDB topology parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PDBQTParser.html">5.14. PDBQT topology parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PQRParser.html">5.15. PQR topology parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PSFParser.html">5.16. PSF topology parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TOPParser.html">5.17. AMBER PRMTOP topology parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TPRParser.html">5.18. Gromacs portable run input TPR format parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TXYZParser.html">5.19. TXYZ topology parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="XYZParser.html">5.20. XYZ Topology Parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="base.html">5.21. Base topology reader classes — <code class="docutils literal"><span class="pre">MDAnalysis.topology.base</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="core.html">5.22. Common functions for topology building — <code class="docutils literal"><span class="pre">MDAnalysis.topology.core</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="guessers.html">5.23. Guessing unknown Topology information — <code class="docutils literal"><span class="pre">MDAnalysis.topology.guessers</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="tables.html">5.24. MDAnalysis topology tables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tpr_util.html">5.25. Utility functions for the TPR topology parser</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../coordinates_modules.html">6. Coordinates modules</a></li>
@@ -480,7 +481,7 @@ from a data file “lammps.data” you can use:</p>
   <li><a href="../../index.html">Documentation overview</a><ul>
   <li><a href="../topology_modules.html">5. Topology modules</a><ul>
       <li>Previous: <a href="HoomdXMLParser.html" title="previous chapter">5.7. HOOMD XML topology parser</a></li>
-      <li>Next: <a href="MMTFParser.html" title="next chapter">5.9. MMTF Topology Parser</a></li>
+      <li>Next: <a href="MinimalParser.html" title="next chapter">5.9. Minimal topology parser</a></li>
   </ul></li>
   </ul></li>
 </ul>

@@ -45,7 +45,7 @@
             
   <h1>Source code for MDAnalysis.topology.base</h1><div class="highlight"><pre>
 <span></span><span class="c1"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-</span>
-<span class="c1"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 </span>
+<span class="c1"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4</span>
 <span class="c1">#</span>
 <span class="c1"># MDAnalysis --- https://www.mdanalysis.org</span>
 <span class="c1"># Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors</span>
@@ -119,9 +119,6 @@
 <span class="sd">    universe : Universe, optional</span>
 <span class="sd">        Supply a Universe to the Parser.  This then passes it to the</span>
 <span class="sd">        atom instances that are created within parsers.</span>
-<span class="sd">    kwargs : optional</span>
-<span class="sd">        Other keyword arguments that can vary with the specific format.</span>
-<span class="sd">        These are stored as self.kwargs</span>
 
 <span class="sd">    All topology readers must define a `parse` method which</span>
 <span class="sd">    returns a Topology object</span>
@@ -135,11 +132,10 @@
 <span class="sd">    .. versionchanged:: 0.9.2</span>
 <span class="sd">       Added keyword &#39;universe&#39; to pass to Atom creation.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span> <span class="o">=</span> <span class="n">kwargs</span>
 
-    <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>  <span class="c1"># pragma: no cover</span>
+    <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>  <span class="c1"># pragma: no cover</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Override this in each subclass&quot;</span><span class="p">)</span></div>
 
 
@@ -180,7 +176,7 @@
 <span class="sd">      The Residue *index* that each Atom gets assigned to. [len(resids)]</span>
 <span class="sd">    squashed : numpy array</span>
 <span class="sd">      The to_squash arrays reduced down to per Residue values</span>
-<span class="sd">      </span>
+
 
 <span class="sd">    Example</span>
 <span class="sd">    -------</span>
@@ -230,7 +226,6 @@
             <span class="c1"># Should be the same for self consistency...</span>
 
     <span class="k">return</span> <span class="n">residx</span><span class="p">,</span> <span class="n">new_others</span>
-            
 </pre></div>
 
           </div>

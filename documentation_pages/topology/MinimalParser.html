@@ -5,7 +5,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>5.5. GAMESS Topology Parser &#8212; MDAnalysis 0.17.0-dev documentation</title>
+    <title>5.9. Minimal topology parser &#8212; MDAnalysis 0.17.0-dev documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
@@ -28,8 +28,8 @@
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="5.6. GRO topology parser" href="GROParser.html" />
-    <link rel="prev" title="5.4. DESRES Molecular Structure file format topology parser" href="DMSParser.html" />
+    <link rel="next" title="5.10. MMTF Topology Parser" href="MMTFParser.html" />
+    <link rel="prev" title="5.8. LAMMPSParser" href="LAMMPSParser.html" />
    
   <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
   
@@ -45,47 +45,37 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <span class="target" id="module-MDAnalysis.topology.GMSParser"></span><div class="section" id="gamess-topology-parser">
-<h1>5.5. GAMESS Topology Parser<a class="headerlink" href="#gamess-topology-parser" title="Permalink to this headline">¶</a></h1>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 0.9.1.</span></p>
-</div>
-<p>Reads a <a class="reference external" href="http://www.msg.ameslab.gov/gamess/">GAMESS</a> output file (also <a class="reference external" href="http://classic.chem.msu.su/gran/gamess/index.html">Firefly</a> and <a class="reference external" href="http://www.cfs.dl.ac.uk/">GAMESS-UK</a>) and pulls
-element information from it.  Symmetrical assembly is read (not
-symmetry element!).  Atom names are read from the GAMESS section.  Any
-information about residues or segments will not be populated.</p>
+  <span class="target" id="module-MDAnalysis.topology.MinimalParser"></span><div class="section" id="minimal-topology-parser">
+<h1>5.9. Minimal topology parser<a class="headerlink" href="#minimal-topology-parser" title="Permalink to this headline">¶</a></h1>
+<p>Parses only the number of atoms from a coordinate/trajectory file.
+This minimal topology can be used to access coordinate data without the need
+for a full-fledged topology file.</p>
 <div class="section" id="classes">
-<h2>5.5.1. Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
+<h2>5.9.1. Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
-<dt id="MDAnalysis.topology.GMSParser.GMSParser">
-<em class="property">class </em><code class="descclassname">MDAnalysis.topology.GMSParser.</code><code class="descname">GMSParser</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/GMSParser.html#GMSParser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.GMSParser.GMSParser" title="Permalink to this definition">¶</a></dt>
-<dd><p><a class="reference external" href="http://www.msg.ameslab.gov/gamess/">GAMESS</a> topology parser.</p>
+<dt id="MDAnalysis.topology.MinimalParser.MinimalParser">
+<em class="property">class </em><code class="descclassname">MDAnalysis.topology.MinimalParser.</code><code class="descname">MinimalParser</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/MinimalParser.html#MinimalParser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.MinimalParser.MinimalParser" title="Permalink to this definition">¶</a></dt>
+<dd><p>Produces a minimal topology from only the number of atoms.</p>
 <dl class="docutils">
-<dt>Creates the following Attributes:</dt>
+<dt>This requires that the number of atoms be given in one of two ways:</dt>
 <dd><ul class="first last simple">
-<li>names</li>
-<li>atomic charges</li>
-</ul>
-</dd>
-<dt>Guesses:</dt>
-<dd><ul class="first last simple">
-<li>types</li>
-<li>masses</li>
+<li>The number of atoms can be given as the ‘n_atoms’ keyword argument.</li>
+<li>If this is not given, then a Reader object for the filename will be
+created and the <cite>parse_n_atoms</cite> method on this Reader will be called,
+(requiring that the Reader has this capability).</li>
 </ul>
 </dd>
 </dl>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 0.9.1.</span></p>
-</div>
+<p>This requires that the coordinate format has</p>
 <dl class="method">
-<dt id="MDAnalysis.topology.GMSParser.GMSParser.close">
-<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.GMSParser.GMSParser.close" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.topology.MinimalParser.MinimalParser.close">
+<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.MinimalParser.MinimalParser.close" title="Permalink to this definition">¶</a></dt>
 <dd><p>Close the trajectory file.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="MDAnalysis.topology.GMSParser.GMSParser.convert_forces_from_native">
-<code class="descname">convert_forces_from_native</code><span class="sig-paren">(</span><em>force</em>, <em>inplace=True</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.GMSParser.GMSParser.convert_forces_from_native" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.topology.MinimalParser.MinimalParser.convert_forces_from_native">
+<code class="descname">convert_forces_from_native</code><span class="sig-paren">(</span><em>force</em>, <em>inplace=True</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.MinimalParser.MinimalParser.convert_forces_from_native" title="Permalink to this definition">¶</a></dt>
 <dd><p>Conversion of forces array <em>force</em> from native to base units</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -111,8 +101,8 @@ is avoided.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="MDAnalysis.topology.GMSParser.GMSParser.convert_forces_to_native">
-<code class="descname">convert_forces_to_native</code><span class="sig-paren">(</span><em>force</em>, <em>inplace=True</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.GMSParser.GMSParser.convert_forces_to_native" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.topology.MinimalParser.MinimalParser.convert_forces_to_native">
+<code class="descname">convert_forces_to_native</code><span class="sig-paren">(</span><em>force</em>, <em>inplace=True</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.MinimalParser.MinimalParser.convert_forces_to_native" title="Permalink to this definition">¶</a></dt>
 <dd><p>Conversion of force array <em>force</em> from base to native units.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -138,8 +128,8 @@ is avoided.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="MDAnalysis.topology.GMSParser.GMSParser.convert_pos_from_native">
-<code class="descname">convert_pos_from_native</code><span class="sig-paren">(</span><em>x</em>, <em>inplace=True</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.GMSParser.GMSParser.convert_pos_from_native" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.topology.MinimalParser.MinimalParser.convert_pos_from_native">
+<code class="descname">convert_pos_from_native</code><span class="sig-paren">(</span><em>x</em>, <em>inplace=True</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.MinimalParser.MinimalParser.convert_pos_from_native" title="Permalink to this definition">¶</a></dt>
 <dd><p>Conversion of coordinate array x from native units to base units.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -168,8 +158,8 @@ returned.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="MDAnalysis.topology.GMSParser.GMSParser.convert_pos_to_native">
-<code class="descname">convert_pos_to_native</code><span class="sig-paren">(</span><em>x</em>, <em>inplace=True</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.GMSParser.GMSParser.convert_pos_to_native" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.topology.MinimalParser.MinimalParser.convert_pos_to_native">
+<code class="descname">convert_pos_to_native</code><span class="sig-paren">(</span><em>x</em>, <em>inplace=True</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.MinimalParser.MinimalParser.convert_pos_to_native" title="Permalink to this definition">¶</a></dt>
 <dd><p>Conversion of coordinate array <cite>x</cite> from base units to native units.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -198,8 +188,8 @@ returned.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="MDAnalysis.topology.GMSParser.GMSParser.convert_time_from_native">
-<code class="descname">convert_time_from_native</code><span class="sig-paren">(</span><em>t</em>, <em>inplace=True</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.GMSParser.GMSParser.convert_time_from_native" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.topology.MinimalParser.MinimalParser.convert_time_from_native">
+<code class="descname">convert_time_from_native</code><span class="sig-paren">(</span><em>t</em>, <em>inplace=True</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.MinimalParser.MinimalParser.convert_time_from_native" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert time <em>t</em> from native units to base units.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -230,8 +220,8 @@ returned.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="MDAnalysis.topology.GMSParser.GMSParser.convert_time_to_native">
-<code class="descname">convert_time_to_native</code><span class="sig-paren">(</span><em>t</em>, <em>inplace=True</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.GMSParser.GMSParser.convert_time_to_native" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.topology.MinimalParser.MinimalParser.convert_time_to_native">
+<code class="descname">convert_time_to_native</code><span class="sig-paren">(</span><em>t</em>, <em>inplace=True</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.MinimalParser.MinimalParser.convert_time_to_native" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert time <em>t</em> from base units to native units.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -261,8 +251,8 @@ returned.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="MDAnalysis.topology.GMSParser.GMSParser.convert_velocities_from_native">
-<code class="descname">convert_velocities_from_native</code><span class="sig-paren">(</span><em>v</em>, <em>inplace=True</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.GMSParser.GMSParser.convert_velocities_from_native" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.topology.MinimalParser.MinimalParser.convert_velocities_from_native">
+<code class="descname">convert_velocities_from_native</code><span class="sig-paren">(</span><em>v</em>, <em>inplace=True</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.MinimalParser.MinimalParser.convert_velocities_from_native" title="Permalink to this definition">¶</a></dt>
 <dd><p>Conversion of velocities array <em>v</em> from native to base units</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -288,8 +278,8 @@ is avoided.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="MDAnalysis.topology.GMSParser.GMSParser.convert_velocities_to_native">
-<code class="descname">convert_velocities_to_native</code><span class="sig-paren">(</span><em>v</em>, <em>inplace=True</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.GMSParser.GMSParser.convert_velocities_to_native" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.topology.MinimalParser.MinimalParser.convert_velocities_to_native">
+<code class="descname">convert_velocities_to_native</code><span class="sig-paren">(</span><em>v</em>, <em>inplace=True</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.MinimalParser.MinimalParser.convert_velocities_to_native" title="Permalink to this definition">¶</a></dt>
 <dd><p>Conversion of coordinate array <cite>v</cite> from base to native units</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -315,9 +305,9 @@ is avoided.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="MDAnalysis.topology.GMSParser.GMSParser.parse">
-<code class="descname">parse</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/GMSParser.html#GMSParser.parse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.GMSParser.GMSParser.parse" title="Permalink to this definition">¶</a></dt>
-<dd><p>Read list of atoms from a GAMESS file.</p>
+<dt id="MDAnalysis.topology.MinimalParser.MinimalParser.parse">
+<code class="descname">parse</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/MinimalParser.html#MinimalParser.parse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.MinimalParser.MinimalParser.parse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the minimal <em>Topology</em> object</p>
 </dd></dl>
 
 </dd></dl>
@@ -363,14 +353,14 @@ is avoided.</p>
 <li class="toctree-l2"><a class="reference internal" href="CRDParser.html">5.2. CRD topology parser</a></li>
 <li class="toctree-l2"><a class="reference internal" href="DLPolyParser.html">5.3. DL Poly format Topology Readers — <code class="docutils literal"><span class="pre">MDAnalysis.topology.DLPolyParser</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="DMSParser.html">5.4. DESRES Molecular Structure file format topology parser</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">5.5. GAMESS Topology Parser</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#classes">5.5.1. Classes</a></li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="GMSParser.html">5.5. GAMESS Topology Parser</a></li>
 <li class="toctree-l2"><a class="reference internal" href="GROParser.html">5.6. GRO topology parser</a></li>
 <li class="toctree-l2"><a class="reference internal" href="HoomdXMLParser.html">5.7. HOOMD XML topology parser</a></li>
 <li class="toctree-l2"><a class="reference internal" href="LAMMPSParser.html">5.8. LAMMPSParser</a></li>
-<li class="toctree-l2"><a class="reference internal" href="MinimalParser.html">5.9. Minimal topology parser</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">5.9. Minimal topology parser</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#classes">5.9.1. Classes</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="MMTFParser.html">5.10. MMTF Topology Parser</a></li>
 <li class="toctree-l2"><a class="reference internal" href="MOL2Parser.html">5.11. MOL2 file format — <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.MOL2</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="PDBParser.html">5.12. PDB Topology Parser</a></li>
@@ -406,8 +396,8 @@ is avoided.</p>
 <ul>
   <li><a href="../../index.html">Documentation overview</a><ul>
   <li><a href="../topology_modules.html">5. Topology modules</a><ul>
-      <li>Previous: <a href="DMSParser.html" title="previous chapter">5.4. DESRES Molecular Structure file format topology parser</a></li>
-      <li>Next: <a href="GROParser.html" title="next chapter">5.6. GRO topology parser</a></li>
+      <li>Previous: <a href="LAMMPSParser.html" title="previous chapter">5.8. LAMMPSParser</a></li>
+      <li>Next: <a href="MMTFParser.html" title="next chapter">5.10. MMTF Topology Parser</a></li>
   </ul></li>
   </ul></li>
 </ul>
@@ -434,7 +424,7 @@ is avoided.</p>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
       
       |
-      <a href="../../_sources/documentation_pages/topology/GMSParser.rst.txt"
+      <a href="../../_sources/documentation_pages/topology/MinimalParser.rst.txt"
           rel="nofollow">Page source</a>
     </div>
 

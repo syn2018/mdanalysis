@@ -140,6 +140,13 @@ has to guess the file format for each individual list member.
 [<code class="docutils literal"><span class="pre">None</span></code>] Can also pass a subclass of
 <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.ProtoReader" title="MDAnalysis.coordinates.base.ProtoReader"><code class="xref py py-class docutils literal"><span class="pre">MDAnalysis.coordinates.base.ProtoReader</span></code></a> to define a custom
 reader to be used on the trajectory file.</li>
+<li><strong>all_coordinates</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – If set to <code class="docutils literal"><span class="pre">True</span></code> specifies that if more than one filename is passed
+they are all to be used, if possible, as coordinate files (employing a
+<a class="reference internal" href="../coordinates/chain.html#MDAnalysis.coordinates.chain.ChainReader" title="MDAnalysis.coordinates.chain.ChainReader"><code class="xref py py-class docutils literal"><span class="pre">MDAnalysis.coordinates.chain.ChainReader</span></code></a>). [<code class="docutils literal"><span class="pre">False</span></code>] The
+default behavior is to take the first file as a topology and the
+remaining as coordinates. The first argument will always always be used
+to infer a topology regardless of <em>all_coordinates</em>. This parameter is
+ignored if only one argument is passed.</li>
 <li><strong>guess_bonds</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a><em>, </em><em>optional</em>) – Once Universe has been loaded, attempt to guess the connectivity
 between atoms.  This will populate the .bonds .angles and .dihedrals
 attributes of the Universe.</li>
@@ -323,6 +330,52 @@ the Universe as a numpy array: <code class="xref py py-meth docutils literal"><s
 <dt>
 <code class="descname">dimensions</code></dt>
 <dd><p>Current dimensions of the unitcell</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="MDAnalysis.core.universe.Universe.empty">
+<em class="property">classmethod </em><code class="descname">empty</code><span class="sig-paren">(</span><em>n_atoms</em>, <em>n_residues=None</em>, <em>n_segments=None</em>, <em>atom_resindex=None</em>, <em>residue_segindex=None</em>, <em>trajectory=False</em>, <em>velocities=False</em>, <em>forces=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/universe.html#Universe.empty"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.universe.Universe.empty" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a blank Universe</p>
+<p>Useful for building a Universe without requiring existing files,
+for example for system building.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>n_atoms</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – number of Atoms in the Universe</li>
+<li><strong>n_residues</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a><em>, </em><em>optional</em>) – number of Residues in the Universe, defaults to 1</li>
+<li><strong>n_segments</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a><em>, </em><em>optional</em>) – number of Segments in the Universe, defaults to 1</li>
+<li><strong>atom_resindex</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.14)"><em>numpy.array</em></a><em>, </em><em>optional</em>) – mapping of atoms to residues</li>
+<li><strong>residue_segindex</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.14)"><em>numpy.array</em></a><em>, </em><em>optional</em>) – mapping of residues to segments</li>
+<li><strong>trajectory</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a><em>, </em><em>optional</em>) – if True, attaches a dummy reader to the Universe, therefore
+allowing coordinates to be set and written.  Default is False</li>
+<li><strong>velocities</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a><em>, </em><em>optional</em>) – include velocities in the dummy Reader</li>
+<li><strong>forces</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a><em>, </em><em>optional</em>) – include forces in the dummy Reader</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">MDAnalysis.Universe object</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<p>For example to create a new Universe with 6 atoms in 2 residues, with
+positions for the atoms and a mass attribute:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span>
+<span class="go">                           atom_resindex=np.array([0, 0, 0, 1, 1, 1]),</span>
+<span class="go">                           trajectory=True,</span>
+<span class="go">        )</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">u</span><span class="o">.</span><span class="n">add_TopologyAttr</span><span class="p">(</span><span class="s1">&#39;masses&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.17.0.</span></p>
+</div>
 </dd></dl>
 
 <dl class="attribute">

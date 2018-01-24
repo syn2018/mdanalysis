@@ -139,7 +139,7 @@
 <span class="kn">import</span> <span class="nn">MDAnalysis</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 
-<span class="kn">from</span> <span class="nn">..</span> <span class="k">import</span> <span class="n">_ANCHOR_UNIVERSES</span><span class="p">,</span> <span class="n">_TOPOLOGY_ATTRS</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="k">import</span> <span class="n">_ANCHOR_UNIVERSES</span><span class="p">,</span> <span class="n">_TOPOLOGY_ATTRS</span><span class="p">,</span> <span class="n">_PARSERS</span>
 <span class="kn">from</span> <span class="nn">..exceptions</span> <span class="k">import</span> <span class="n">NoDataError</span>
 <span class="kn">from</span> <span class="nn">..lib</span> <span class="k">import</span> <span class="n">util</span>
 <span class="kn">from</span> <span class="nn">..lib.log</span> <span class="k">import</span> <span class="n">ProgressMeter</span><span class="p">,</span> <span class="n">_set_verbose</span>
@@ -214,6 +214,14 @@
 <span class="sd">        [``None``] Can also pass a subclass of</span>
 <span class="sd">        :class:`MDAnalysis.coordinates.base.ProtoReader` to define a custom</span>
 <span class="sd">        reader to be used on the trajectory file.</span>
+<span class="sd">    all_coordinates : bool</span>
+<span class="sd">        If set to ``True`` specifies that if more than one filename is passed</span>
+<span class="sd">        they are all to be used, if possible, as coordinate files (employing a</span>
+<span class="sd">        :class:`MDAnalysis.coordinates.chain.ChainReader`). [``False``] The</span>
+<span class="sd">        default behavior is to take the first file as a topology and the</span>
+<span class="sd">        remaining as coordinates. The first argument will always always be used</span>
+<span class="sd">        to infer a topology regardless of *all_coordinates*. This parameter is</span>
+<span class="sd">        ignored if only one argument is passed.</span>
 <span class="sd">    guess_bonds : bool, optional</span>
 <span class="sd">        Once Universe has been loaded, attempt to guess the connectivity</span>
 <span class="sd">        between atoms.  This will populate the .bonds .angles and .dihedrals</span>
@@ -265,7 +273,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_trajectory</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span> <span class="o">=</span> <span class="p">{}</span>
 
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">args</span><span class="p">:</span>
             <span class="c1"># create an empty universe</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_topology</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span> <span class="o">=</span> <span class="kc">None</span>
@@ -296,44 +304,50 @@
                 <span class="n">parser</span> <span class="o">=</span> <span class="n">get_parser_for</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="n">topology_format</span><span class="p">)</span>
                 <span class="k">try</span><span class="p">:</span>
                     <span class="k">with</span> <span class="n">parser</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span> <span class="k">as</span> <span class="n">p</span><span class="p">:</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">_topology</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">parse</span><span class="p">()</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_topology</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
                 <span class="k">except</span> <span class="p">(</span><span class="ne">IOError</span><span class="p">,</span> <span class="ne">OSError</span><span class="p">)</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
-                    <span class="c1"># There are 2 kinds of errors that might be raised here - one because the file isn&#39;t present</span>
+                    <span class="c1"># There are 2 kinds of errors that might be raised here:</span>
+                    <span class="c1"># one because the file isn&#39;t present</span>
                     <span class="c1"># or the permissions are bad, second when the parser fails</span>
-                    <span class="k">if</span> <span class="n">err</span><span class="o">.</span><span class="n">errno</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">errno</span><span class="o">.</span><span class="n">errorcode</span><span class="p">[</span><span class="n">err</span><span class="o">.</span><span class="n">errno</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;ENOENT&#39;</span><span class="p">,</span> <span class="s1">&#39;EACCES&#39;</span><span class="p">]:</span>
-                        <span class="c1"># Runs if the error is propagated due to no permission/ file not found</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="n">err</span><span class="o">.</span><span class="n">errno</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span>
+                        <span class="n">errno</span><span class="o">.</span><span class="n">errorcode</span><span class="p">[</span><span class="n">err</span><span class="o">.</span><span class="n">errno</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;ENOENT&#39;</span><span class="p">,</span> <span class="s1">&#39;EACCES&#39;</span><span class="p">]):</span>
+                        <span class="c1"># Runs if the error is propagated due to no permission / file not found</span>
                         <span class="n">six</span><span class="o">.</span><span class="n">reraise</span><span class="p">(</span><span class="o">*</span><span class="n">sys</span><span class="o">.</span><span class="n">exc_info</span><span class="p">())</span>
-
                     <span class="k">else</span><span class="p">:</span>
                         <span class="c1"># Runs when the parser fails</span>
-                        <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s2">&quot;Failed to load from the topology file </span><span class="si">{0}</span><span class="s2">&quot;</span>
-                                      <span class="s2">&quot; with parser </span><span class="si">{1}</span><span class="s2">.</span><span class="se">\n</span><span class="s2">&quot;</span>
-                                      <span class="s2">&quot;Error: </span><span class="si">{2}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">err</span><span class="p">))</span>
-                <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Failed to construct topology from file </span><span class="si">{0}</span><span class="s2">&quot;</span>
-                                     <span class="s2">&quot; with parser </span><span class="si">{1}</span><span class="s2"> </span><span class="se">\n</span><span class="s2">&quot;</span>
-                                     <span class="s2">&quot;Error: </span><span class="si">{2}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">err</span><span class="p">))</span>
+                        <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span>
+                            <span class="s2">&quot;Failed to load from the topology file </span><span class="si">{0}</span><span class="s2">&quot;</span>
+                            <span class="s2">&quot; with parser </span><span class="si">{1}</span><span class="s2">.</span><span class="se">\n</span><span class="s2">&quot;</span>
+                            <span class="s2">&quot;Error: </span><span class="si">{2}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">err</span><span class="p">))</span>
+                <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">NotImplementedError</span><span class="p">)</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                        <span class="s2">&quot;Failed to construct topology from file </span><span class="si">{0}</span><span class="s2">&quot;</span>
+                        <span class="s2">&quot; with parser </span><span class="si">{1}</span><span class="s2">.</span><span class="se">\n</span><span class="s2">&quot;</span>
+                        <span class="s2">&quot;Error: </span><span class="si">{2}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">err</span><span class="p">))</span>
 
             <span class="c1"># generate and populate Universe version of each class</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_generate_from_topology</span><span class="p">()</span>
 
             <span class="c1"># Load coordinates</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;all_coordinates&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="c1"># If we got the topology as a Topology object, then we</span>
                     <span class="c1"># cannot read coordinates from it.</span>
-                    <span class="n">coordinatefile</span> <span class="o">=</span> <span class="kc">None</span>
+                    <span class="n">coordinatefile</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="c1"># Can the topology file also act as coordinate file?</span>
                     <span class="k">try</span><span class="p">:</span>
                         <span class="n">_</span> <span class="o">=</span> <span class="n">get_reader_for</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span>
                                            <span class="nb">format</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;format&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
                     <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-                        <span class="n">coordinatefile</span> <span class="o">=</span> <span class="kc">None</span>
+                        <span class="n">coordinatefile</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
                     <span class="k">else</span><span class="p">:</span>
-                        <span class="n">coordinatefile</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">]</span>
+                        <span class="n">coordinatefile</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,)</span> <span class="o">+</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">coordinatefile</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">coordinatefile</span><span class="p">:</span>
+                <span class="n">coordinatefile</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">load_new</span><span class="p">(</span><span class="n">coordinatefile</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="c1"># Check for guess_bonds</span>
@@ -397,6 +411,70 @@
                 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">segment</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
                     <span class="n">segment</span> <span class="o">=</span> <span class="n">segment</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_instant_selectors</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">segment</span>
+
+<div class="viewcode-block" id="Universe.empty"><a class="viewcode-back" href="../../../documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe.empty">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">empty</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">n_atoms</span><span class="p">,</span> <span class="n">n_residues</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">n_segments</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+              <span class="n">atom_resindex</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">residue_segindex</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+              <span class="n">trajectory</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">velocities</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">forces</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create a blank Universe</span>
+
+<span class="sd">        Useful for building a Universe without requiring existing files,</span>
+<span class="sd">        for example for system building.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        n_atoms : int</span>
+<span class="sd">          number of Atoms in the Universe</span>
+<span class="sd">        n_residues : int, optional</span>
+<span class="sd">          number of Residues in the Universe, defaults to 1</span>
+<span class="sd">        n_segments : int, optional</span>
+<span class="sd">          number of Segments in the Universe, defaults to 1</span>
+<span class="sd">        atom_resindex : numpy.array, optional</span>
+<span class="sd">          mapping of atoms to residues</span>
+<span class="sd">        residue_segindex : numpy.array, optional</span>
+<span class="sd">          mapping of residues to segments</span>
+<span class="sd">        trajectory : bool, optional</span>
+<span class="sd">          if True, attaches a dummy reader to the Universe, therefore</span>
+<span class="sd">          allowing coordinates to be set and written.  Default is False</span>
+<span class="sd">        velocities : bool, optional</span>
+<span class="sd">          include velocities in the dummy Reader</span>
+<span class="sd">        forces : bool, optional</span>
+<span class="sd">          include forces in the dummy Reader</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        MDAnalysis.Universe object</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        For example to create a new Universe with 6 atoms in 2 residues, with</span>
+<span class="sd">        positions for the atoms and a mass attribute:</span>
+
+<span class="sd">        &gt;&gt;&gt; u = mda.Universe.empty(6, 2,</span>
+<span class="sd">                                   atom_resindex=np.array([0, 0, 0, 1, 1, 1]),</span>
+<span class="sd">                                   trajectory=True,</span>
+<span class="sd">                )</span>
+<span class="sd">        &gt;&gt;&gt; u.add_TopologyAttr(&#39;masses&#39;)</span>
+
+<span class="sd">        .. versionadded:: 0.17.0</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">n_residues</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">n_residues</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">n_segments</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">n_segments</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">top</span> <span class="o">=</span> <span class="n">Topology</span><span class="p">(</span><span class="n">n_atoms</span><span class="p">,</span> <span class="n">n_residues</span><span class="p">,</span> <span class="n">n_segments</span><span class="p">,</span>
+                       <span class="n">atom_resindex</span><span class="o">=</span><span class="n">atom_resindex</span><span class="p">,</span>
+                       <span class="n">residue_segindex</span><span class="o">=</span><span class="n">residue_segindex</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="n">u</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span><span class="n">top</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">trajectory</span><span class="p">:</span>
+            <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span> <span class="o">=</span> <span class="n">get_reader_for</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;dummy&#39;</span><span class="p">)(</span>
+                <span class="n">n_atoms</span><span class="o">=</span><span class="n">n_atoms</span><span class="p">,</span>
+                <span class="n">velocities</span><span class="o">=</span><span class="n">velocities</span><span class="p">,</span> <span class="n">forces</span><span class="o">=</span><span class="n">forces</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">u</span></div>
 
     <span class="k">def</span> <span class="nf">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
         <span class="c1"># This implements the instant selector of segments from a Universe.</span>

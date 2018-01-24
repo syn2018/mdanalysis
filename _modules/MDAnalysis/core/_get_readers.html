@@ -274,17 +274,21 @@
     <span class="k">try</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">_PARSERS</span><span class="p">[</span><span class="nb">format</span><span class="p">]</span>
     <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-            <span class="s2">&quot;&#39;</span><span class="si">{0}</span><span class="s2">&#39; isn&#39;t a valid topology format</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="s2">&quot;   You can use &#39;Universe(topology, ..., topology_format=FORMAT)&#39; &quot;</span>
-            <span class="s2">&quot;   to explicitly specify the format and</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="s2">&quot;   override automatic detection. Known FORMATs are:</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="s2">&quot;   </span><span class="si">{1}</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="s2">&quot;   See https://docs.mdanalysis.org/documentation_pages/topology/init.html#supported-topology-formats</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="s2">&quot;   For missing formats, raise an issue at &quot;</span>
-            <span class="s2">&quot;   http://issues.mdanalysis.org&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">format</span><span class="p">,</span> <span class="n">_PARSERS</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
-
-
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">rdr</span> <span class="o">=</span> <span class="n">get_reader_for</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;&#39;</span><span class="si">{0}</span><span class="s2">&#39; isn&#39;t a valid topology format, nor a coordinate format</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;   from which a topology can be minimally inferred.</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;   You can use &#39;Universe(topology, ..., topology_format=FORMAT)&#39;</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;   to explicitly specify the format and</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;   override automatic detection. Known FORMATs are:</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;   </span><span class="si">{1}</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;   See https://docs.mdanalysis.org/documentation_pages/topology/init.html#supported-topology-formats</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;   For missing formats, raise an issue at </span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;   http://issues.mdanalysis.org&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">format</span><span class="p">,</span> <span class="n">_PARSERS</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">_PARSERS</span><span class="p">[</span><span class="s1">&#39;MINIMAL&#39;</span><span class="p">]</span>
 </pre></div>
 
           </div>

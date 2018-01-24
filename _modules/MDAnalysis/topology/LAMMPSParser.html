@@ -236,7 +236,7 @@
 
         <span class="k">return</span> <span class="n">header</span><span class="p">,</span> <span class="n">sects</span></div>
 
-<div class="viewcode-block" id="DATAParser.parse"><a class="viewcode-back" href="../../../documentation_pages/topology/LAMMPSParser.html#MDAnalysis.topology.LAMMPSParser.DATAParser.parse">[docs]</a>    <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="DATAParser.parse"><a class="viewcode-back" href="../../../documentation_pages/topology/LAMMPSParser.html#MDAnalysis.topology.LAMMPSParser.DATAParser.parse">[docs]</a>    <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Parses a LAMMPS_ DATA file.</span>
 
 <span class="sd">        Returns</span>
@@ -244,7 +244,7 @@
 <span class="sd">        MDAnalysis Topology object.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Can pass atom_style to help parsing</span>
-        <span class="n">atom_style</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;atom_style&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">atom_style</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;atom_style&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
 
         <span class="n">head</span><span class="p">,</span> <span class="n">sects</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">grab_datafile</span><span class="p">()</span>
 

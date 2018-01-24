@@ -29,7 +29,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="6.1. Trajectory Readers and Writers — MDAnalysis.coordinates" href="coordinates/init.html" />
-    <link rel="prev" title="5.24. Utility functions for the TPR topology parser" href="topology/tpr_util.html" />
+    <link rel="prev" title="5.25. Utility functions for the TPR topology parser" href="topology/tpr_util.html" />
    
   <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
   
@@ -78,6 +78,7 @@ provide the format in the keyword argument <em>format</em> to
 <li class="toctree-l1"><a class="reference internal" href="coordinates/TRZ.html">6.20. TRZ trajectory I/O  — <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.TRZ</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="coordinates/memory.html">6.21. Reading trajectories from memory — <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.memory</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="coordinates/null.html">6.22. Null output — <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.null</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="coordinates/dummy.html">6.23. Dummy coordinate reader</a></li>
 </ul>
 </div>
 <p class="rubric">Coordinate core modules</p>
@@ -86,10 +87,10 @@ developers. Programmers and anyone trying to implement new
 functionality should first read the <a class="reference internal" href="coordinates/init.html#trajectory-api"><span class="std std-ref">Trajectory API</span></a>.</p>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="coordinates/base.html">6.23. Base classes — <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.base</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="coordinates/core.html">6.24. Common functions for coordinate reading — <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.core</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="coordinates/chain.html">6.25. ChainReader — <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.chain</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="coordinates/XDR.html">6.26. XDR based trajectory files — <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.XDR</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="coordinates/base.html">6.24. Base classes — <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.base</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="coordinates/core.html">6.25. Common functions for coordinate reading — <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.core</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="coordinates/chain.html">6.26. ChainReader — <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.chain</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="coordinates/XDR.html">6.27. XDR based trajectory files — <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.XDR</span></code></a></li>
 </ul>
 </div>
 </div>
@@ -151,10 +152,11 @@ functionality should first read the <a class="reference internal" href="coordina
 <li class="toctree-l2"><a class="reference internal" href="coordinates/TRZ.html">6.20. TRZ trajectory I/O  — <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.TRZ</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="coordinates/memory.html">6.21. Reading trajectories from memory — <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.memory</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="coordinates/null.html">6.22. Null output — <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.null</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="coordinates/base.html">6.23. Base classes — <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.base</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="coordinates/core.html">6.24. Common functions for coordinate reading — <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.core</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="coordinates/chain.html">6.25. ChainReader — <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.chain</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="coordinates/XDR.html">6.26. XDR based trajectory files — <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.XDR</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="coordinates/dummy.html">6.23. Dummy coordinate reader</a></li>
+<li class="toctree-l2"><a class="reference internal" href="coordinates/base.html">6.24. Base classes — <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.base</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="coordinates/core.html">6.25. Common functions for coordinate reading — <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.core</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="coordinates/chain.html">6.26. ChainReader — <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.chain</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="coordinates/XDR.html">6.27. XDR based trajectory files — <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.XDR</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="selections_modules.html">7. Selection exporters</a></li>
@@ -172,7 +174,7 @@ functionality should first read the <a class="reference internal" href="coordina
 <h3>Related Topics</h3>
 <ul>
   <li><a href="../index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="topology/tpr_util.html" title="previous chapter">5.24. Utility functions for the TPR topology parser</a></li>
+      <li>Previous: <a href="topology/tpr_util.html" title="previous chapter">5.25. Utility functions for the TPR topology parser</a></li>
       <li>Next: <a href="coordinates/init.html" title="next chapter">6.1. Trajectory Readers and Writers  — <code class="docutils literal"><span class="pre">MDAnalysis.coordinates</span></code></a></li>
   </ul></li>
 </ul>

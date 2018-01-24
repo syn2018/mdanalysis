@@ -5,7 +5,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>MDAnalysis.topology.XYZParser &#8212; MDAnalysis 0.17.0-dev documentation</title>
+    <title>MDAnalysis.coordinates.dummy &#8212; MDAnalysis 0.17.0-dev documentation</title>
     <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
@@ -43,9 +43,9 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <h1>Source code for MDAnalysis.topology.XYZParser</h1><div class="highlight"><pre>
-<span></span><span class="c1"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-</span>
-<span class="c1"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 </span>
+  <h1>Source code for MDAnalysis.coordinates.dummy</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding: utf-8 -*-</span>
+<span class="c1"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4</span>
 <span class="c1">#</span>
 <span class="c1"># MDAnalysis --- https://www.mdanalysis.org</span>
 <span class="c1"># Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors</span>
@@ -67,91 +67,43 @@
 <span class="c1">#</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">XYZ Topology Parser</span>
-<span class="sd">===================</span>
+<span class="sd">Dummy coordinate reader</span>
+<span class="sd">=======================</span>
 
-<span class="sd">.. versionadded:: 0.9.1</span>
-
-<span class="sd">Reads an xyz file and pulls the atom information from it.  Because</span>
-<span class="sd">xyz only has atom name information, all information about residues</span>
-<span class="sd">and segments won&#39;t be populated.</span>
 
 <span class="sd">Classes</span>
 <span class="sd">-------</span>
 
-<span class="sd">.. autoclass:: XYZParser</span>
+<span class="sd">.. autoclass:: DummyReader</span>
 <span class="sd">   :members:</span>
+
 
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
 
-<span class="kn">from</span> <span class="nn">six.moves</span> <span class="k">import</span> <span class="nb">range</span>
+
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
-<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">guessers</span>
-<span class="kn">from</span> <span class="nn">..lib.util</span> <span class="k">import</span> <span class="n">openany</span>
-<span class="kn">from</span> <span class="nn">.base</span> <span class="k">import</span> <span class="n">TopologyReaderBase</span>
-<span class="kn">from</span> <span class="nn">..core.topology</span> <span class="k">import</span> <span class="n">Topology</span>
-<span class="kn">from</span> <span class="nn">..core.topologyattrs</span> <span class="k">import</span> <span class="p">(</span>
-    <span class="n">Atomnames</span><span class="p">,</span>
-    <span class="n">Atomids</span><span class="p">,</span>
-    <span class="n">Atomtypes</span><span class="p">,</span>
-    <span class="n">Masses</span><span class="p">,</span>
-    <span class="n">Resids</span><span class="p">,</span>
-    <span class="n">Resnums</span><span class="p">,</span>
-    <span class="n">Segids</span><span class="p">,</span>
-<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">.base</span> <span class="k">import</span> <span class="n">SingleFrameReaderBase</span>
 
 
-<div class="viewcode-block" id="XYZParser"><a class="viewcode-back" href="../../../documentation_pages/topology/XYZParser.html#MDAnalysis.topology.XYZParser.XYZParser">[docs]</a><span class="k">class</span> <span class="nc">XYZParser</span><span class="p">(</span><span class="n">TopologyReaderBase</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Parse a list of atoms from an XYZ file.</span>
+<div class="viewcode-block" id="DummyReader"><a class="viewcode-back" href="../../../documentation_pages/coordinates/dummy.html#MDAnalysis.coordinates.dummy.DummyReader">[docs]</a><span class="k">class</span> <span class="nc">DummyReader</span><span class="p">(</span><span class="n">SingleFrameReaderBase</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Basic Reader which does not read from any file</span>
 
-<span class="sd">    Creates the following attributes:</span>
-<span class="sd">     - Atomnames</span>
-
-<span class="sd">    Guesses the following attributes:</span>
-<span class="sd">     - Atomtypes</span>
-<span class="sd">     - Masses</span>
-
-<span class="sd">    .. versionadded:: 0.9.1</span>
+<span class="sd">    .. versionadded:: 0.17.0</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="nb">format</span> <span class="o">=</span> <span class="s1">&#39;XYZ&#39;</span>
+    <span class="nb">format</span> <span class="o">=</span> <span class="s1">&#39;dummy&#39;</span>
 
-<div class="viewcode-block" id="XYZParser.parse"><a class="viewcode-back" href="../../../documentation_pages/topology/XYZParser.html#MDAnalysis.topology.XYZParser.XYZParser.parse">[docs]</a>    <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Read the file and return the structure.</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_atoms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">velocities</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">forces</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">=</span> <span class="n">n_atoms</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="s1">&#39;DummyReader&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_read_first_frame</span><span class="p">(</span><span class="n">velocities</span><span class="p">,</span> <span class="n">forces</span><span class="p">)</span>
 
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        MDAnalysis Topology object</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">with</span> <span class="n">openany</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span> <span class="k">as</span> <span class="n">inf</span><span class="p">:</span>
-            <span class="n">natoms</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">inf</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
-            <span class="n">inf</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
-
-            <span class="n">names</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">natoms</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
-
-            <span class="c1"># Can&#39;t infinitely read as XYZ files can be multiframe</span>
-            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">natoms</span><span class="p">):</span>
-                <span class="n">name</span> <span class="o">=</span> <span class="n">inf</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
-                <span class="n">names</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">name</span>
-
-        <span class="c1"># Guessing time</span>
-        <span class="n">atomtypes</span> <span class="o">=</span> <span class="n">guessers</span><span class="o">.</span><span class="n">guess_types</span><span class="p">(</span><span class="n">names</span><span class="p">)</span>
-        <span class="n">masses</span> <span class="o">=</span> <span class="n">guessers</span><span class="o">.</span><span class="n">guess_masses</span><span class="p">(</span><span class="n">atomtypes</span><span class="p">)</span>
-
-        <span class="n">attrs</span> <span class="o">=</span> <span class="p">[</span><span class="n">Atomnames</span><span class="p">(</span><span class="n">names</span><span class="p">),</span>
-                 <span class="n">Atomids</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">natoms</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span>
-                 <span class="n">Atomtypes</span><span class="p">(</span><span class="n">atomtypes</span><span class="p">,</span> <span class="n">guessed</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
-                 <span class="n">Masses</span><span class="p">(</span><span class="n">masses</span><span class="p">,</span> <span class="n">guessed</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
-                 <span class="n">Resids</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">])),</span>
-                 <span class="n">Resnums</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">])),</span>
-                 <span class="n">Segids</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s1">&#39;SYSTEM&#39;</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)),</span>
-                 <span class="p">]</span>
-
-        <span class="n">top</span> <span class="o">=</span> <span class="n">Topology</span><span class="p">(</span><span class="n">natoms</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span>
-                       <span class="n">attrs</span><span class="o">=</span><span class="n">attrs</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="n">top</span></div></div>
+    <span class="k">def</span> <span class="nf">_read_first_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">velocities</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">forces</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Timestep</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span> <span class="n">positions</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                      <span class="n">velocities</span><span class="o">=</span><span class="n">velocities</span><span class="p">,</span> <span class="n">forces</span><span class="o">=</span><span class="n">forces</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ts</span></div>
 </pre></div>
 
           </div>
