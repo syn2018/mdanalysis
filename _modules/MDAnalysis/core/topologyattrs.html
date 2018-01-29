@@ -697,6 +697,38 @@
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">na</span><span class="p">)</span></div>
 
 
+<div class="viewcode-block" id="RecordTypes"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.RecordTypes">[docs]</a><span class="k">class</span> <span class="nc">RecordTypes</span><span class="p">(</span><span class="n">AtomAttr</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;For PDB-like formats, indicates if ATOM or HETATM</span>
+
+<span class="sd">    Defaults to &#39;ATOM&#39;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># internally encodes {True: &#39;ATOM&#39;, False: &#39;HETATM&#39;}</span>
+    <span class="n">attrname</span> <span class="o">=</span> <span class="s1">&#39;record_types&#39;</span>
+    <span class="n">singular</span> <span class="o">=</span> <span class="s1">&#39;record_type&#39;</span>
+    <span class="n">per_object</span> <span class="o">=</span> <span class="s1">&#39;atom&#39;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">guessed</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">values</span> <span class="o">==</span> <span class="s1">&#39;ATOM&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_guessed</span> <span class="o">=</span> <span class="n">guessed</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_gen_initial_values</span><span class="p">(</span><span class="n">na</span><span class="p">,</span> <span class="n">nr</span><span class="p">,</span> <span class="n">ns</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s1">&#39;ATOM&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">na</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">get_atoms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atomgroup</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">atomgroup</span><span class="o">.</span><span class="n">ix</span><span class="p">],</span> <span class="s1">&#39;ATOM&#39;</span><span class="p">,</span> <span class="s1">&#39;HETATM&#39;</span><span class="p">)</span>
+
+    <span class="nd">@_check_length</span>
+    <span class="k">def</span> <span class="nf">set_atoms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atomgroup</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">atomgroup</span><span class="o">.</span><span class="n">ix</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">values</span> <span class="o">==</span> <span class="s1">&#39;ATOM&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">get_residues</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rg</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">get_atoms</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">atoms</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">rg</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">get_segments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sg</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">get_atoms</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">atoms</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">sg</span><span class="p">]</span></div>
+
+
 <div class="viewcode-block" id="ChainIDs"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.ChainIDs">[docs]</a><span class="k">class</span> <span class="nc">ChainIDs</span><span class="p">(</span><span class="n">AtomAttr</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;ChainID per atom</span>
 
