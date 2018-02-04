@@ -22,7 +22,7 @@
 from __future__ import absolute_import
 
 import numpy as np
-import pdb
+from numpy.testing import assert_equal
 import pytest
 
 from MDAnalysisTests.datafiles import (
@@ -88,29 +88,38 @@ def refReader(request):
 
 
 @pytest.fixture()
-def newReader(refReader):
+def original_and_copy(refReader):
     new = refReader.copy()
     try:
-        yield new
+        yield refReader, new
     finally:
         new.close()
 
 
-def test_reader_n_atoms(refReader, newReader):
-    assert newReader.n_atoms == refReader.n_atoms
+def test_reader_n_atoms(original_and_copy):
+    original, copy = original_and_copy
+    assert original.n_atoms == copy.n_atoms
 
-def test_reader_filename(refReader, newReader):
-    assert refReader.filename == newReader.filename
+def test_reader_filename(original_and_copy):
+    original, copy = original_and_copy
+    assert original.filename == copy.filename
 
-def test_reader_independent_iteration(refReader, newReader):
-    if len(refReader) < 2:
+def test_reader_independent_iteration(original_and_copy):
+    original, copy = original_and_copy
+    if len(original) < 2:
         pytest.skip('Single frame reader')
+    # initially at same frame
+    assert original.ts.frame == copy.ts.frame
 
-    assert refReader.ts.frame == newReader.ts.frame
+    copy[1]
+    assert original.ts.frame == 0
+    assert copy.ts.frame == 1
 
-    newReader[1]
-    assert refReader.ts.frame == 0
-    assert newReader.ts.frame == 1
+def test_positions_share_memory(original_and_copy):
+    original, copy = original_and_copy
+    assert not np.shares_memory(original.ts.positions, copy.ts.positions)
 
-def test_positions_share_memory(refReader, newReader):
-    assert not np.shares_memory(refReader.ts.positions, newReader.ts.positions)
+    original.ts.positions *= 2
+
+    with pytest.raises(AssertionError):
+        assert_equal(original.ts.positions, copy.ts.positions)
