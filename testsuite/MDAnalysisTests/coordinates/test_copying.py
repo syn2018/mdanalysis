@@ -27,6 +27,7 @@ import pytest
 import MDAnalysis as mda
 
 from MDAnalysisTests.datafiles import (
+    AUX_XVG,
     CRD,
     DCD,
     DMS,
@@ -47,7 +48,7 @@ from MDAnalysisTests.datafiles import (
     TRZ,
     XTC,
     XPDB_small,
-    XYZ,
+    XYZ_mini,
 )
 from MDAnalysis.coordinates.core import get_reader_for
 
@@ -73,7 +74,7 @@ from MDAnalysis.coordinates.core import get_reader_for
     ('TRJ', TRJ, dict(n_atoms=252)),
     ('XTC', XTC, dict()),
     ('XPDB', XPDB_small, dict()),
-    ('XYZ', XYZ, dict()),
+    ('XYZ', XYZ_mini, dict()),
     ('NCDF', NCDF, dict()),
     ('memory', np.arange(60).reshape(2, 10, 3).astype(np.float64), dict()),
 ], scope='module')
@@ -134,8 +135,17 @@ def test_positions_share_memory(original_and_copy):
         assert_equal(original.ts.positions, copy.ts.positions)
 
 def test_chainreader_NIE():
-    u = mda.Universe(GRO, [GRO, GRO])
+    u = mda.Universe(XYZ_mini, [XYZ_mini, XYZ_mini])
 
     with pytest.raises(NotImplementedError) as e:
         u.trajectory.copy()
     assert 'Copy not implemented for ChainReader' in str(e.value)
+
+def test_auxiliary_NIE():
+    u = mda.Universe(XYZ_mini)
+
+    u.trajectory.add_auxiliary('myaux', AUX_XVG)
+
+    with pytest.raises(NotImplementedError) as e:
+        u.trajectory.copy()
+    assert 'Copy not implemented for AuxReader' in str(e.value)
