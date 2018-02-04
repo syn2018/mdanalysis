@@ -1172,8 +1172,20 @@ class ProtoReader(six.with_metaclass(_Readermeta, IOBase)):
         self._auxs = {}
 
     def copy(self):
-        return self.__class__(self.filename,
-                              n_atoms=self.n_atoms)
+        """Return independent copy of this Reader.
+
+        New Reader will have its own file handle and can seek/iterate
+        independently of the original.
+
+        Will also copy the current state of the Timestep held in
+        the original Reader
+        """
+        new = self.__class__(self.filename,
+                             n_atoms=self.n_atoms)
+        new.ts = self.ts.copy()
+        for auxname, auxread in self._auxs.items():
+            new.add_auxiliary(auxname, auxread.copy())
+        return new
 
     def __len__(self):
         return self.n_frames
