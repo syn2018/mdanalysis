@@ -25,7 +25,6 @@ import numpy as np
 import pdb
 import pytest
 
-from MDAnalysisTests import module_not_found
 from MDAnalysisTests.datafiles import (
     CRD,
     DCD,
@@ -74,8 +73,7 @@ from MDAnalysis.coordinates.core import get_reader_for
     ('XTC', XTC, dict()),
     ('XPDB', XPDB_small, dict()),
     ('XYZ', XYZ, dict()),
-    pytest.mark.skipif(module_not_found('netCDF4'),
-                       ('NCDF', NCDF, dict()), reason='netcdf'),
+    ('NCDF', NCDF, dict()),
     ('memory', np.arange(60).reshape(2, 10, 3).astype(np.float64), dict()),
 ], scope='module')
 def refReader(request):
