@@ -24,6 +24,7 @@ from __future__ import absolute_import
 import numpy as np
 from numpy.testing import assert_equal
 import pytest
+import MDAnalysis as mda
 
 from MDAnalysisTests.datafiles import (
     CRD,
@@ -115,6 +116,14 @@ def test_reader_independent_iteration(original_and_copy):
     assert original.ts.frame == 0
     assert copy.ts.frame == 1
 
+def test_timestep_copied(refReader):
+    # modify the positions from original
+    refReader.ts.positions *= 2
+
+    new = refReader.copy()
+
+    assert_equal(refReader.ts.positions, new.ts.positions)
+
 def test_positions_share_memory(original_and_copy):
     original, copy = original_and_copy
     assert not np.shares_memory(original.ts.positions, copy.ts.positions)
@@ -123,3 +132,10 @@ def test_positions_share_memory(original_and_copy):
 
     with pytest.raises(AssertionError):
         assert_equal(original.ts.positions, copy.ts.positions)
+
+def test_chainreader_NIE():
+    u = mda.Universe(GRO, [GRO, GRO])
+
+    with pytest.raises(NotImplementedError) as e:
+        u.trajectory.copy()
+    assert 'Copy not implemented for ChainReader' in str(e.value)
