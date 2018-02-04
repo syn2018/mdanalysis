@@ -164,14 +164,43 @@ def test_topology_copy_unique_attrs(refTop, attr):
 
 
 
-@pytest.fixture(params=[
-    (PSF, DCD)
-])
-def refUniverse(request):
-    return mda.Universe(*request.param)
+@pytest.fixture(scope='module')
+def refUniverse():
+    return mda.Universe(PSF, DCD)
 
+class TestCopyUniverse(object):
+    def test_universe_copy(self, refUniverse):
+        new = refUniverse.copy()
 
-def test_universe_copy(refUniverse):
-    new = refUniverse.copy()
+        assert new is not refUniverse
+        assert len(new.atoms) == len(refUniverse.atoms)
 
-    assert len(new.atoms) == len(refUniverse.atoms)
+    def test_positions(self, refUniverse):
+        new = refUniverse.copy()
+        
+        assert_equal(new.atoms.positions, refUniverse.atoms.positions)
+
+    def test_change_positions(self, refUniverse):
+        # check that coordinates act independently
+        new = refUniverse.copy()
+
+        previous = new.atoms[0].position.copy()
+        refUniverse.atoms[0].position = 1, 2, 3
+
+        assert_equal(new.atoms[0].position, previous)
+        assert_equal(refUniverse.atoms[0].position, [1, 2, 3])
+        
+    def test_topology(self, refUniverse):
+        new = refUniverse.copy()
+
+        assert_equal(new.atoms.names, refUniverse.atoms.names)
+
+    def test_change_topology(self, refUniverse):
+        new = refUniverse.copy()
+
+        previous = new.atoms[0].name
+        refUniverse.atoms[0].name = 'newname'
+
+        assert new.atoms[0].name == previous
+        assert refUniverse.atoms[0].name == 'newname'
+        
