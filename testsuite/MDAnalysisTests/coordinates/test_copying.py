@@ -22,6 +22,11 @@
 from __future__ import absolute_import
 
 import numpy as np
+try:
+    from numpy import shares_memory
+except ImportError:
+    shares_memory = False
+    
 from numpy.testing import assert_equal
 import pytest
 import MDAnalysis as mda
@@ -125,6 +130,8 @@ def test_timestep_copied(refReader):
 
     assert_equal(refReader.ts.positions, new.ts.positions)
 
+@pytest.mark.skipif(shares_memory == False,
+                    reason='old numpy lacked shares_memory')
 def test_positions_share_memory(original_and_copy):
     original, copy = original_and_copy
     assert not np.shares_memory(original.ts.positions, copy.ts.positions)
