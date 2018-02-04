@@ -34,7 +34,7 @@ from MDAnalysisTests.datafiles import (
     INPCRD,
     GMS_ASYMOPT,
     GRO,
-    LAMMPSdata,
+    LAMMPSdata_mini,
     mol2_molecules,
     MMTF,
     NCDF,
@@ -54,7 +54,7 @@ from MDAnalysis.coordinates.core import get_reader_for
 @pytest.fixture(params=[
     # formatname, filename
     ('CRD', CRD, dict()),
-    ('DATA', LAMMPSdata, dict(n_atoms=18364)),
+    ('DATA', LAMMPSdata_mini, dict(n_atoms=1)),
     ('DCD', DCD, dict()),
     ('DMS', DMS, dict()),
     ('CONFIG', DLP_CONFIG, dict()),
