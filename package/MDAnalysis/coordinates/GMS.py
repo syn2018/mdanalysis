@@ -81,7 +81,7 @@ class GMSReader(base.ReaderBase):
         super(GMSReader, self).__init__(outfilename, **kwargs)
 
         # the filename has been parsed to be either b(g)zipped or not
-        self.outfile = util.anyopen(self.filename)
+        self._file = self.outfile = util.anyopen(self.filename)
 
         # note that, like for xtc and trr files, _n_atoms and _n_frames are used quasi-private variables
         # to prevent the properties being recalculated
@@ -264,5 +264,3 @@ class GMSReader(base.ReaderBase):
             return
         self.outfile.close()
         self.outfile = None
-
-
