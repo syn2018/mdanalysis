@@ -26,8 +26,8 @@ try:
     from numpy import shares_memory
 except ImportError:
     shares_memory = False
-    
-from numpy.testing import assert_equal
+
+from numpy.testing import assert_equal, assert_almost_equal
 import pytest
 import MDAnalysis as mda
 
@@ -82,23 +82,23 @@ from MDAnalysis.coordinates.core import get_reader_for
     ('XYZ', XYZ_mini, dict()),
     ('NCDF', NCDF, dict()),
     ('memory', np.arange(60).reshape(2, 10, 3).astype(np.float64), dict()),
-], scope='module')
-def refReader(request):
+])
+def ref_reader(request):
     fmt_name, filename, extras = request.param
 
     r = get_reader_for(filename, format=fmt_name)(filename, **extras)
     try:
         yield r
-        # make sure file handle is closed afterwards
     finally:
+        # make sure file handle is closed afterwards
         r.close()
 
 
 @pytest.fixture()
-def original_and_copy(refReader):
-    new = refReader.copy()
+def original_and_copy(ref_reader):
+    new = ref_reader.copy()
     try:
-        yield refReader, new
+        yield ref_reader, new
     finally:
         new.close()
 
@@ -107,11 +107,14 @@ def test_reader_n_atoms(original_and_copy):
     original, copy = original_and_copy
     assert original.n_atoms == copy.n_atoms
 
+
 def test_reader_filename(original_and_copy):
     original, copy = original_and_copy
     assert original.filename == copy.filename
 
+
 def test_reader_independent_iteration(original_and_copy):
+    # check that the two Readers iterate independently
     original, copy = original_and_copy
     if len(original) < 2:
         pytest.skip('Single frame reader')
@@ -122,17 +125,52 @@ def test_reader_independent_iteration(original_and_copy):
     assert original.ts.frame == 0
     assert copy.ts.frame == 1
 
-def test_timestep_copied(refReader):
-    # modify the positions from original
-    refReader.ts.positions *= 2
 
-    new = refReader.copy()
+def test_reader_initial_frame_maintained(original_and_copy):
+    # check that copy inherits nonzero frame of original
+    original, _ = original_and_copy
 
-    assert_equal(refReader.ts.positions, new.ts.positions)
+    if len(original) < 2:
+        pytest.skip('Single frame reader')
+
+    # seek
+    original[1]
+
+    copy = original.copy()
+
+    assert original.ts.frame == copy.ts.frame
+    assert_equal(original.ts.positions, copy.ts.positions)
+
+
+def test_copy_file_handle(original_and_copy):
+    original, _ = original_and_copy
+
+    if len(original) < 2:
+        pytest.skip('Single frame reader')
+    elif not hasattr(original, '_file'):
+        pytest.skip('Cant find file handle')
+
+    original[1]
+    copy = original.copy()
+
+    assert original._file.tell() == copy._file.tell()
+
+
+def test_timestep_copied(ref_reader):
+    # modify the positions and dimensions from original
+    # then check that the copy gets this (even though not in file)
+    ref_reader.ts.positions *= 2
+    ref_reader.ts.dimensions = newbox = [4, 5, 6, 70, 80, 90]
+    new = ref_reader.copy()
+
+    assert_equal(ref_reader.ts.positions, new.ts.positions)
+    assert_almost_equal(new.ts.dimensions, newbox, decimal=4)
+
 
 @pytest.mark.skipif(shares_memory == False,
                     reason='old numpy lacked shares_memory')
 def test_positions_share_memory(original_and_copy):
+    # check that the memory in Timestep objects is unique
     original, copy = original_and_copy
     assert not np.shares_memory(original.ts.positions, copy.ts.positions)
 
@@ -142,6 +180,7 @@ def test_positions_share_memory(original_and_copy):
         assert_equal(original.ts.positions, copy.ts.positions)
 
 def test_chainreader_NIE():
+    # ChainReader not implemented, check error message is sane
     u = mda.Universe(XYZ_mini, [XYZ_mini, XYZ_mini])
 
     with pytest.raises(NotImplementedError) as e:
@@ -149,6 +188,7 @@ def test_chainreader_NIE():
     assert 'Copy not implemented for ChainReader' in str(e.value)
 
 def test_auxiliary_NIE():
+    # Aux's not implemented, check for sane error message
     u = mda.Universe(XYZ_mini)
 
     u.trajectory.add_auxiliary('myaux', AUX_XVG)
